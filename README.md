@@ -3,7 +3,7 @@
 A one-page kiosk slideshow for the monitor in the ATOC entrance. It cycles through
 live satellite imagery, Colorado radar, our own campus weather station, current
 conditions, research highlights, the colloquium schedule, and department notices —
-45 seconds each, forever, with no clicking.
+30 seconds each, forever, with no clicking.
 
 It is plain HTML/CSS/JS on GitHub Pages. No build step, no server, no accounts, no
 cost. Once it is running, the only thing anyone ever has to touch is `content.json`.
@@ -160,7 +160,7 @@ The `"slides"` array is the running order. Every slide takes:
 | `id` | Any short name; only used by you |
 | `type` | See the table below |
 | `title` / `subtitle` | Headline and the small caps line under it |
-| `duration` | Seconds on screen (45 by default) |
+| `duration` | Seconds on screen. Omit it and the slide uses `defaultDuration` from `site`, which is how the deck ships. |
 | `enabled` | `false` parks a slide without deleting it |
 | `credit` | Small grey attribution in the bottom-right |
 
@@ -200,11 +200,12 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Mesoscale Rapid Scan — One-Minute Imagery | UW–Madison AOS |
 | GOES-19 GeoColor — Continental U.S. | NOAA/NESDIS STAR |
 | 8–14 Day Temperature Outlook | NOAA CPC |
-| ENSO Forecast — El Niño / La Niña Outlook | IRI, Columbia University |
+| ENSO Predictions Plume | IRI, Columbia University |
+| ENSO Model Skill — 22 Seasons of Forecasts | IRI, Columbia University |
 | Atmospheric CO2 at Mauna Loa | NOAA GML (Boulder) |
 
-17 slides is a **14-minute cycle**. If that feels long, turn a few off with
-`"enabled": false` or shorten their `duration`.
+18 slides at 30 seconds is a **9-minute cycle**. No slide sets its own
+`duration`, so `defaultDuration` under `site` changes the pace of the whole thing.
 
 Currently parked (set `"enabled": true` to bring one back):
 
