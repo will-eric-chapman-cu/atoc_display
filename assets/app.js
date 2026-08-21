@@ -43,6 +43,23 @@ function versioned(src, refreshMinutes) {
   return src + (src.includes('?') ? '&' : '?') + 'v=' + bucket;
 }
 
+/* Some publishers file their figures under a dated path that rolls over every
+   month (IRI's ENSO forecast, for one). A src may therefore carry placeholders:
+     {YYYY} 2026   {MM} 08   {M} 8   {M0} 7 (zero-indexed, as IRI numbers months)
+   Returns this month's URL first and last month's as a fallback, because early
+   in a month the new figure is not published yet. */
+function datedSources(src) {
+  if (!/\{(YYYY|MM|M|M0)\}/.test(src)) return [src];
+  const fill = (d) => src
+    .replace(/\{YYYY\}/g, String(d.getFullYear()))
+    .replace(/\{MM\}/g, String(d.getMonth() + 1).padStart(2, '0'))
+    .replace(/\{M0\}/g, String(d.getMonth()))
+    .replace(/\{M\}/g, String(d.getMonth() + 1));
+  const now = new Date();
+  const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  return [fill(now), fill(prev)];
+}
+
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -404,10 +421,14 @@ function renderFrame(slide) {
   f.loading = 'eager';
   f.setAttribute('scrolling', 'no');
   const z = Number(slide.zoom) > 0 ? Number(slide.zoom) : 1;
-  if (z !== 1) {
+  // cropTop hides the embedded page's own banner and player buttons, which are
+  // noise on a screen nobody can click. Measured in the source page's own pixels:
+  // translateY runs before scale(), so it crops exactly that much off the top.
+  const crop = Number(slide.cropTop) > 0 ? Number(slide.cropTop) : 0;
+  if (z !== 1 || crop) {
     f.style.width = (100 / z) + '%';
-    f.style.height = (100 / z) + '%';
-    f.style.transform = `scale(${z})`;
+    f.style.height = `calc(${100 / z}% + ${crop}px)`;
+    f.style.transform = `scale(${z}) translateY(${-crop}px)`;
     f.style.transformOrigin = '0 0';
   }
   wrap.append(f);
@@ -439,19 +460,26 @@ function frame(slide, bodyNode, captionText) {
 
 async function renderImage(slide) {
   const wrap = el('div', 'img-wrap' + (slide.fit === 'cover' ? ' cover' : ''));
-  try {
-    const src = versioned(slide.src, slide.refreshMinutes);
-    const img = await loadImage(src);
+  let loaded = null;
+  for (const candidate of datedSources(slide.src)) {
+    const src = versioned(candidate, slide.refreshMinutes);
+    try {
+      loaded = { img: await loadImage(src), src };
+      break;
+    } catch (err) {
+      console.warn(err);              // try the next candidate, e.g. last month's figure
+    }
+  }
+  if (loaded) {
     if (slide.fit !== 'cover' && slide.backdrop !== false) {
       const bg = new Image();          // same URL, so this comes straight from cache
       bg.className = 'img-bg';
       bg.alt = '';
-      bg.src = src;
+      bg.src = loaded.src;
       wrap.append(bg);
     }
-    wrap.append(img);
-  } catch (err) {
-    console.warn(err);
+    wrap.append(loaded.img);
+  } else {
     wrap.append(el('div', 'img-fail', 'Imagery temporarily unavailable.\n' + (slide.title || '')));
   }
   return frame(slide, wrap, slide.credit);

@@ -1,11 +1,9 @@
 {
   "_readme": "Everything on the display is controlled from this file. Edit it on github.com, commit, and the screen picks up the change within 10 minutes. Keep it valid JSON: double quotes, commas between items, no trailing comma.",
-
   "site": {
     "defaultDuration": 45,
     "timezone": "America/Denver"
   },
-
   "weather": {
     "_readme": "Boulder, CO. To move the location: look up your point at https://api.weather.gov/points/LAT,LON and copy gridId/gridX/gridY into 'gridpoint' as 'BOU/54,74'.",
     "lat": 40.0076,
@@ -16,7 +14,6 @@
     "refreshMinutes": 10,
     "showAlerts": true
   },
-
   "station": {
     "_readme": "The ATOC rooftop station feed published by willychap.github.io/weather. 'url' must be a JSON array of readings with datetime/temp_f/humidity/... fields.",
     "url": "https://willychap.github.io/weather/data.json",
@@ -25,7 +22,6 @@
     "credit": "CU Boulder ATOC rooftop station · sundowner.colorado.edu",
     "refreshMinutes": 15
   },
-
   "slides": [
     {
       "id": "goes-colorado",
@@ -74,13 +70,13 @@
       "enabled": true
     },
     {
-      "id": "goes-fulldisk",
+      "id": "wisc-vis-co",
       "type": "image",
-      "title": "GOES-19 Full Disk",
-      "subtitle": "The Western Hemisphere, top of the hour",
-      "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/GEOCOLOR/1808x1808.jpg",
-      "refreshMinutes": 30,
-      "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
+      "title": "Colorado Visible Satellite — High Resolution",
+      "subtitle": "GOES-East red visible band (ABI ch. 2), Boulder centre frame",
+      "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/vis/co/latest_co_1.jpg",
+      "refreshMinutes": 5,
+      "credit": "UW–Madison AOS · GOES-East ABI",
       "duration": 45,
       "enabled": true
     },
@@ -89,6 +85,50 @@
       "type": "colloquium",
       "title": "ATOC Colloquium",
       "subtitle": "Talks, seminars, and department events",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "wisc-radar-co",
+      "_readme": "Live animated page from UW-Madison, embedded. zoom scales the fixed 1200px-wide page up to fill a TV; cropTop trims that many of the source page’s pixels off the top, hiding its banner and player buttons.",
+      "type": "iframe",
+      "title": "Colorado Reflectivity Composite — Animated",
+      "subtitle": "High-resolution NEXRAD composite loop from UW–Madison",
+      "src": "https://tempest.aos.wisc.edu/radar/co3comphtml5.html",
+      "zoom": 1.45,
+      "cropTop": 140,
+      "credit": "UW–Madison AOS · NEXRAD data from NOAA/NWS and NSF Unidata",
+      "duration": 60,
+      "enabled": true
+    },
+    {
+      "id": "announcements",
+      "type": "list",
+      "source": "announcements",
+      "title": "Department Notices",
+      "subtitle": "What's happening in ATOC",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "wisc-cloudphase",
+      "type": "image",
+      "title": "Day Cloud Phase Distinction RGB",
+      "subtitle": "Ice cloud, water cloud and bare ground separated by colour",
+      "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/multi_day_cloud_phase_rgb/sw/latest_sw_1.jpg",
+      "refreshMinutes": 10,
+      "credit": "UW–Madison AOS · GOES-East ABI multispectral RGB",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "goes-fulldisk",
+      "type": "image",
+      "title": "GOES-19 Full Disk",
+      "subtitle": "The Western Hemisphere, top of the hour",
+      "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/GEOCOLOR/1808x1808.jpg",
+      "refreshMinutes": 30,
+      "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
       "duration": 45,
       "enabled": true
     },
@@ -104,11 +144,13 @@
       "enabled": true
     },
     {
-      "id": "announcements",
-      "type": "list",
-      "source": "announcements",
-      "title": "Department Notices",
-      "subtitle": "What's happening in ATOC",
+      "id": "wisc-airmass",
+      "type": "image",
+      "title": "Air Mass RGB — Southwest",
+      "subtitle": "Dry stratospheric intrusions, jet streaks and frontal boundaries",
+      "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/multi_air_mass_rgb/sw/latest_sw_1.jpg",
+      "refreshMinutes": 10,
+      "credit": "UW–Madison AOS · GOES-East ABI multispectral RGB",
       "duration": 45,
       "enabled": true
     },
@@ -135,6 +177,29 @@
       "enabled": true
     },
     {
+      "id": "iri-enso",
+      "_readme": "The {YYYY}/{M0} placeholders are filled in at display time; IRI numbers months from zero. If this month is not published yet the display falls back to last month automatically.",
+      "type": "image",
+      "title": "ENSO Forecast — El Niño / La Niña Outlook",
+      "subtitle": "IRI/CCSR model-based probabilistic forecast, updated monthly",
+      "src": "https://ensoforecast2.iri.columbia.edu/figure3_plot/{YYYY}/{M0}",
+      "refreshMinutes": 720,
+      "credit": "International Research Institute for Climate and Society, Columbia University",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "keeling",
+      "type": "image",
+      "title": "Atmospheric CO2 at Mauna Loa",
+      "subtitle": "The Keeling Curve, updated monthly",
+      "src": "https://gml.noaa.gov/webdata/ccgg/trends/co2_trend_mlo.png",
+      "refreshMinutes": 720,
+      "credit": "NOAA Global Monitoring Laboratory, Boulder CO",
+      "duration": 45,
+      "enabled": true
+    },
+    {
       "id": "cpc-precip",
       "type": "image",
       "title": "8–14 Day Precipitation Outlook",
@@ -144,28 +209,6 @@
       "credit": "NOAA Climate Prediction Center",
       "duration": 45,
       "enabled": false
-    },
-    {
-      "id": "aurora",
-      "type": "image",
-      "title": "Aurora Forecast — Northern Hemisphere",
-      "subtitle": "OVATION model, 30–90 minute outlook",
-      "src": "https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg",
-      "refreshMinutes": 20,
-      "credit": "NOAA Space Weather Prediction Center, Boulder CO",
-      "duration": 45,
-      "enabled": true
-    },
-    {
-      "id": "keeling",
-      "type": "image",
-      "title": "Atmospheric CO₂ at Mauna Loa",
-      "subtitle": "The Keeling Curve, updated monthly",
-      "src": "https://gml.noaa.gov/webdata/ccgg/trends/co2_trend_mlo.png",
-      "refreshMinutes": 720,
-      "credit": "NOAA Global Monitoring Laboratory, Boulder CO",
-      "duration": 45,
-      "enabled": true
     },
     {
       "id": "station-dashboard",
@@ -180,25 +223,23 @@
       "enabled": false
     }
   ],
-
   "research": [
     {
       "_readme": "EXAMPLE ENTRIES — replace with real ATOC work. 'image' is optional: use a full https:// URL, or drop a file in the images/ folder and write \"images/yourfile.jpg\".",
       "tag": "Example — replace me",
       "title": "Add a short, plain-language headline about the finding",
       "people": "Researcher name(s) · ATOC / CIRES / NCAR",
-      "blurb": "Two or three sentences a visitor with no atmospheric science background could follow: what question the group asked, how they went after it, and why the answer matters. Aim for roughly 60 words — the display truncates anything much longer.",
+      "blurb": "Will Chapman: Voted Best Ever.",
       "image": ""
     },
     {
       "tag": "Example — replace me",
       "title": "A second highlight so the slide has something to rotate to",
       "people": "Researcher name(s) · ATOC",
-      "blurb": "Each time this slide comes around it shows the next entry in this list, so add as many as you like and the screen will work through them over the course of the day.",
+      "blurb": "Will Chapman: Still Voted Best Ever.",
       "image": ""
     }
   ],
-
   "colloquia": [
     {
       "_readme": "EXAMPLE ENTRIES — replace with the real schedule. Past dates disappear automatically, so it is safe to paste in the whole semester at once. Date format must be YYYY-MM-DD.",
@@ -220,7 +261,6 @@
       "abstract": ""
     }
   ],
-
   "announcements": [
     {
       "title": "Welcome to ATOC",

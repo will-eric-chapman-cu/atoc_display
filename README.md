@@ -167,12 +167,13 @@ The `"slides"` array is the running order. Every slide takes:
 | `type` | What it does |
 |---|---|
 | `image` | Shows a live image URL. Add `src`, and `refreshMinutes` for how often to re-download it. |
+| | `src` may contain `{YYYY}` `{MM}` `{M}` `{M0}`, filled in at display time for publishers who file figures under a dated path. If this month's is not up yet, last month's is used. |
 | `weather` | Current conditions and forecast from the National Weather Service. |
 | `station` | Our own campus weather station: latest readings plus a 24-hour temperature trace. |
 | `research` | Next entry from the `research` list. |
 | `colloquium` | Next upcoming talk from the `colloquia` list. |
 | `list` | A grid of cards — set `"source": "announcements"` or give it its own `items`. |
-| `iframe` | Embeds another web page live. Add `src`, and `zoom` (e.g. `1.25`) to scale it up for a TV. |
+| `iframe` | Embeds another web page live. Add `src`, `zoom` (e.g. `1.25`) to scale it up for a TV, and `cropTop` to trim that many of the source page's pixels off the top — useful for hiding someone else's banner and player buttons. |
 
 **Reordering:** move the blocks around in the array.
 **Turning something off:** change its `enabled` to `false`.
@@ -189,14 +190,21 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Current conditions, Boulder | api.weather.gov |
 | Our own weather station | willychap.github.io/weather |
 | ATOC research highlight | `content.json` |
-| GOES-19 full disk | NOAA/NESDIS STAR |
+| Colorado visible satellite, high resolution | UW–Madison AOS |
 | ATOC colloquium | `content.json` |
-| Severe weather outlook, day 1 | NOAA/NWS SPC |
+| Colorado reflectivity composite (animated, embedded) | UW–Madison AOS |
 | Department notices | `content.json` |
+| Day Cloud Phase Distinction RGB | UW–Madison AOS |
+| GOES-19 full disk | NOAA/NESDIS STAR |
+| Severe weather outlook, day 1 | NOAA/NWS SPC |
+| Air Mass RGB, Southwest | UW–Madison AOS |
 | GOES-19 GeoColor, CONUS | NOAA/NESDIS STAR |
 | 8–14 day temperature outlook | NOAA CPC |
-| Aurora forecast | NOAA SWPC (Boulder) |
+| ENSO forecast (El Niño / La Niña) | IRI, Columbia University |
 | Atmospheric CO₂ at Mauna Loa | NOAA GML (Boulder) |
+
+Seventeen slides at 45 seconds each is a **13-minute cycle**. If that feels long,
+turn a few off with `"enabled": false` or shorten their `duration`.
 
 Two more ship turned off: the **8–14 day precipitation outlook**, and the full
 **campus weather dashboard** embedded live from `willychap.github.io/weather`.
@@ -220,8 +228,10 @@ Handy when someone is standing at the screen with a keyboard.
 | `c` | Show or hide the mouse cursor |
 | click | Jump to the next slide |
 
-Add `?start=3` to the URL to open straight to slide 3 — useful when you are checking
-something you just edited.
+Two URL switches help when you are checking something you just edited:
+`?start=3` opens straight to slide 3, and `?seconds=10` runs the whole deck at ten
+seconds a slide. They apply to that page load only and change nothing in `content.json`
+— e.g. `…/atoc_display/?seconds=10&start=6`.
 
 ---
 
