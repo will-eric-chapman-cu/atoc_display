@@ -245,15 +245,15 @@
     {
       "_readme": "EXAMPLE ENTRIES — replace with real ATOC work. 'image' is optional: use a full https:// URL, or drop a file in the images/ folder and write \"images/yourfile.jpg\".",
       "tag": "Example — replace me",
-      "title": "Add a short, plain-language headline about the finding",
-      "people": "Researcher name(s) · ATOC / CIRES / NCAR",
+      "title": "An ATOC Faculty Wins First Place",
+      "people": "Will Chapman ATOC",
       "blurb": "Will Chapman: Voted Best Ever.",
       "image": ""
     },
     {
       "tag": "Example — replace me",
-      "title": "A second highlight so the slide has something to rotate to",
-      "people": "Researcher name(s) · ATOC",
+      "title": "An ATOC Faculty Wins First Place",
+      "people": "Will Chapman ATOC",
       "blurb": "Will Chapman: Still Voted Best Ever.",
       "image": ""
     }
