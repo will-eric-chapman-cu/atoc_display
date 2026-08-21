@@ -70,7 +70,20 @@
       "enabled": true
     },
     {
+      "id": "wisc-vis-co-loop",
+      "type": "iframe",
+      "title": "Colorado Visible Satellite — Animated",
+      "subtitle": "GOES-East red visible band, high resolution, Boulder centre frame",
+      "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/vis/goes16_co.html",
+      "zoom": 1.25,
+      "cropTop": 95,
+      "credit": "UW–Madison AOS · GOES-East ABI",
+      "duration": 60,
+      "enabled": true
+    },
+    {
       "id": "wisc-vis-co",
+      "_readme": "Static latest frame — kept as a lighter fallback if the animated loop is too much for the laptop or the network.",
       "type": "image",
       "title": "Colorado Visible Satellite — High Resolution",
       "subtitle": "GOES-East red visible band (ABI ch. 2), Boulder centre frame",
@@ -78,7 +91,7 @@
       "refreshMinutes": 5,
       "credit": "UW–Madison AOS · GOES-East ABI",
       "duration": 45,
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "colloquium",
@@ -86,7 +99,8 @@
       "title": "ATOC Colloquium",
       "subtitle": "Talks, seminars, and department events",
       "duration": 45,
-      "enabled": true
+      "enabled": false,
+      "_readme": "Flip enabled to true once real talks are in the \"colloquia\" list below. It is off while that list still holds example entries."
     },
     {
       "id": "wisc-radar-co",
@@ -152,6 +166,19 @@
       "refreshMinutes": 10,
       "credit": "UW–Madison AOS · GOES-East ABI multispectral RGB",
       "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "wisc-meso-rapid",
+      "_readme": "NWS repositions mesoscale sector 1 daily onto whatever is most active, so this roams the country. That is the point of it — it is wherever the severe weather is, at one frame per minute.",
+      "type": "iframe",
+      "title": "Mesoscale Rapid Scan — One-Minute Imagery",
+      "subtitle": "GOES-East floating sector, parked on the day’s most extreme weather",
+      "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/grb/meso_vis_sqrt/meso1_60.html",
+      "zoom": 1.4,
+      "cropTop": 115,
+      "credit": "UW–Madison AOS · GOES-East ABI mesoscale sector",
+      "duration": 60,
       "enabled": true
     },
     {

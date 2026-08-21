@@ -185,30 +185,33 @@ NOAA, NASA, NCAR and NWS imagery all do.
 
 | Slide | Source |
 |---|---|
-| GOES-19 GeoColor, Colorado & Northern Rockies (animated) | NOAA/NESDIS STAR |
-| Colorado radar, KFTG Denver/Boulder (animated) | NOAA/NWS NEXRAD |
-| Current conditions, Boulder | api.weather.gov |
-| Our own weather station | willychap.github.io/weather |
-| ATOC research highlight | `content.json` |
-| Colorado visible satellite, high resolution | UW–Madison AOS |
-| ATOC colloquium | `content.json` |
-| Colorado reflectivity composite (animated, embedded) | UW–Madison AOS |
-| Department notices | `content.json` |
+| GOES-19 GeoColor — Colorado & the Northern Rockies | NOAA/NESDIS STAR |
+| Colorado Radar — Denver/Boulder (KFTG) | NOAA/NWS NEXRAD |
+| Current Conditions — Boulder | api.weather.gov |
+| Our Own Weather Station | willychap.github.io/weather |
+| ATOC Research Highlight | `content.json` |
+| Colorado Visible Satellite — Animated | UW–Madison AOS |
+| Colorado Reflectivity Composite — Animated | UW–Madison AOS |
+| Department Notices | `content.json` |
 | Day Cloud Phase Distinction RGB | UW–Madison AOS |
-| GOES-19 full disk | NOAA/NESDIS STAR |
-| Severe weather outlook, day 1 | NOAA/NWS SPC |
-| Air Mass RGB, Southwest | UW–Madison AOS |
-| GOES-19 GeoColor, CONUS | NOAA/NESDIS STAR |
-| 8–14 day temperature outlook | NOAA CPC |
-| ENSO forecast (El Niño / La Niña) | IRI, Columbia University |
-| Atmospheric CO₂ at Mauna Loa | NOAA GML (Boulder) |
+| GOES-19 Full Disk | NOAA/NESDIS STAR |
+| Severe Weather Outlook — Today | NOAA/NWS SPC |
+| Air Mass RGB — Southwest | UW–Madison AOS |
+| Mesoscale Rapid Scan — One-Minute Imagery | UW–Madison AOS |
+| GOES-19 GeoColor — Continental U.S. | NOAA/NESDIS STAR |
+| 8–14 Day Temperature Outlook | NOAA CPC |
+| ENSO Forecast — El Niño / La Niña Outlook | IRI, Columbia University |
+| Atmospheric CO2 at Mauna Loa | NOAA GML (Boulder) |
 
-Seventeen slides at 45 seconds each is a **13-minute cycle**. If that feels long,
-turn a few off with `"enabled": false` or shorten their `duration`.
+17 slides is a **14-minute cycle**. If that feels long, turn a few off with
+`"enabled": false` or shorten their `duration`.
 
-Two more ship turned off: the **8–14 day precipitation outlook**, and the full
-**campus weather dashboard** embedded live from `willychap.github.io/weather`.
-Set `"enabled": true` on either to add it.
+Currently parked (set `"enabled": true` to bring one back):
+
+- **Colorado Visible Satellite — High Resolution** — a single still frame instead of the animated loop; lighter on an old laptop
+- **ATOC Colloquium** — off until the `colloquia` list holds real talks instead of the examples
+- **8–14 Day Precipitation Outlook** — the precipitation twin of the 8–14 day temperature outlook
+- **Campus Weather Dashboard** — the full Quarto dashboard from the station, embedded live (~8 MB)
 
 If a severe weather watch or warning is issued for Boulder, a red banner appears
 across the top of every slide automatically.
