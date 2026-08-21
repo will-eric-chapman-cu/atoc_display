@@ -54,7 +54,7 @@
     {
       "id": "campus-station",
       "type": "station",
-      "title": "Our Own Weather Station",
+      "title": "Skywatch Weather Station",
       "subtitle": "Live readings from the ATOC instrument on campus",
       "enabled": true
     },
@@ -123,7 +123,7 @@
       "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/multi_day_cloud_phase_rgb/sw/latest_sw_1.jpg",
       "refreshMinutes": 10,
       "credit": "UW–Madison AOS · GOES-East ABI multispectral RGB",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "goes-fulldisk",
