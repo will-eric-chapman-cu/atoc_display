@@ -1,0 +1,242 @@
+{
+  "_readme": "Everything on the display is controlled from this file. Edit it on github.com, commit, and the screen picks up the change within 10 minutes. Keep it valid JSON: double quotes, commas between items, no trailing comma.",
+
+  "site": {
+    "defaultDuration": 45,
+    "timezone": "America/Denver"
+  },
+
+  "weather": {
+    "_readme": "Boulder, CO. To move the location: look up your point at https://api.weather.gov/points/LAT,LON and copy gridId/gridX/gridY into 'gridpoint' as 'BOU/54,74'.",
+    "lat": 40.0076,
+    "lon": -105.2659,
+    "station": "KBDU",
+    "stationName": "Boulder Municipal Airport",
+    "gridpoint": "BOU/54,74",
+    "refreshMinutes": 10,
+    "showAlerts": true
+  },
+
+  "station": {
+    "_readme": "The ATOC rooftop station feed published by willychap.github.io/weather. 'url' must be a JSON array of readings with datetime/temp_f/humidity/... fields.",
+    "url": "https://willychap.github.io/weather/data.json",
+    "name": "ATOC campus weather station",
+    "linkLabel": "willychap.github.io/weather",
+    "credit": "CU Boulder ATOC rooftop station · sundowner.colorado.edu",
+    "refreshMinutes": 15
+  },
+
+  "slides": [
+    {
+      "id": "goes-colorado",
+      "type": "image",
+      "title": "GOES-19 GeoColor — Colorado & the Northern Rockies",
+      "subtitle": "Live satellite loop · updates every 5 minutes",
+      "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/nr/GEOCOLOR/GOES19-NR-GEOCOLOR-600x600.gif",
+      "refreshMinutes": 15,
+      "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "radar-colorado",
+      "type": "image",
+      "title": "Colorado Radar — Denver/Boulder (KFTG)",
+      "subtitle": "Base reflectivity loop · updates every few minutes",
+      "src": "https://radar.weather.gov/ridge/standard/KFTG_loop.gif",
+      "refreshMinutes": 5,
+      "credit": "NOAA/NWS NEXRAD · radar.weather.gov",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "weather-now",
+      "type": "weather",
+      "title": "Current Conditions — Boulder",
+      "subtitle": "Live observations and forecast",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "campus-station",
+      "type": "station",
+      "title": "Our Own Weather Station",
+      "subtitle": "Live readings from the ATOC instrument on campus",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "research",
+      "type": "research",
+      "title": "ATOC Research Highlight",
+      "subtitle": "A rotating look at work from our department",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "goes-fulldisk",
+      "type": "image",
+      "title": "GOES-19 Full Disk",
+      "subtitle": "The Western Hemisphere, top of the hour",
+      "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/FD/GEOCOLOR/1808x1808.jpg",
+      "refreshMinutes": 30,
+      "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "colloquium",
+      "type": "colloquium",
+      "title": "ATOC Colloquium",
+      "subtitle": "Talks, seminars, and department events",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "spc-outlook",
+      "type": "image",
+      "title": "Severe Weather Outlook — Today",
+      "subtitle": "Storm Prediction Center Day 1 convective outlook",
+      "src": "https://www.spc.noaa.gov/products/outlook/day1otlk.png",
+      "refreshMinutes": 60,
+      "credit": "NOAA/NWS Storm Prediction Center, Norman OK",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "announcements",
+      "type": "list",
+      "source": "announcements",
+      "title": "Department Notices",
+      "subtitle": "What's happening in ATOC",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "goes-conus",
+      "type": "image",
+      "title": "GOES-19 GeoColor — Continental U.S.",
+      "subtitle": "Latest full-CONUS scan",
+      "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/CONUS/GEOCOLOR/1250x750.jpg",
+      "refreshMinutes": 10,
+      "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "cpc-temp",
+      "type": "image",
+      "title": "8–14 Day Temperature Outlook",
+      "subtitle": "Probability of above- or below-normal temperatures",
+      "src": "https://www.cpc.ncep.noaa.gov/products/predictions/814day/814temp.new.gif",
+      "refreshMinutes": 180,
+      "credit": "NOAA Climate Prediction Center",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "cpc-precip",
+      "type": "image",
+      "title": "8–14 Day Precipitation Outlook",
+      "subtitle": "Probability of above- or below-normal precipitation",
+      "src": "https://www.cpc.ncep.noaa.gov/products/predictions/814day/814prcp.new.gif",
+      "refreshMinutes": 180,
+      "credit": "NOAA Climate Prediction Center",
+      "duration": 45,
+      "enabled": false
+    },
+    {
+      "id": "aurora",
+      "type": "image",
+      "title": "Aurora Forecast — Northern Hemisphere",
+      "subtitle": "OVATION model, 30–90 minute outlook",
+      "src": "https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg",
+      "refreshMinutes": 20,
+      "credit": "NOAA Space Weather Prediction Center, Boulder CO",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "keeling",
+      "type": "image",
+      "title": "Atmospheric CO₂ at Mauna Loa",
+      "subtitle": "The Keeling Curve, updated monthly",
+      "src": "https://gml.noaa.gov/webdata/ccgg/trends/co2_trend_mlo.png",
+      "refreshMinutes": 720,
+      "credit": "NOAA Global Monitoring Laboratory, Boulder CO",
+      "duration": 45,
+      "enabled": true
+    },
+    {
+      "id": "station-dashboard",
+      "_readme": "The full Quarto dashboard, embedded live. It is a heavy page (~8 MB), so it is off by default — set enabled to true to put it in the rotation. 'zoom' scales the page up for a TV: 1.4 means 140%.",
+      "type": "iframe",
+      "title": "Campus Weather Dashboard",
+      "subtitle": "Full record from the ATOC station",
+      "src": "https://willychap.github.io/weather/dashboard.html",
+      "zoom": 1.25,
+      "credit": "CU Boulder ATOC station dashboard",
+      "duration": 60,
+      "enabled": false
+    }
+  ],
+
+  "research": [
+    {
+      "_readme": "EXAMPLE ENTRIES — replace with real ATOC work. 'image' is optional: use a full https:// URL, or drop a file in the images/ folder and write \"images/yourfile.jpg\".",
+      "tag": "Example — replace me",
+      "title": "Add a short, plain-language headline about the finding",
+      "people": "Researcher name(s) · ATOC / CIRES / NCAR",
+      "blurb": "Two or three sentences a visitor with no atmospheric science background could follow: what question the group asked, how they went after it, and why the answer matters. Aim for roughly 60 words — the display truncates anything much longer.",
+      "image": ""
+    },
+    {
+      "tag": "Example — replace me",
+      "title": "A second highlight so the slide has something to rotate to",
+      "people": "Researcher name(s) · ATOC",
+      "blurb": "Each time this slide comes around it shows the next entry in this list, so add as many as you like and the screen will work through them over the course of the day.",
+      "image": ""
+    }
+  ],
+
+  "colloquia": [
+    {
+      "_readme": "EXAMPLE ENTRIES — replace with the real schedule. Past dates disappear automatically, so it is safe to paste in the whole semester at once. Date format must be YYYY-MM-DD.",
+      "date": "2026-09-03",
+      "time": "3:30 PM",
+      "location": "SEEC Auditorium (S125)",
+      "speaker": "Speaker name",
+      "affiliation": "Their institution",
+      "title": "The title of the talk goes here",
+      "abstract": "An optional one- or two-sentence teaser. Leave this out entirely if you would rather keep the slide clean."
+    },
+    {
+      "date": "2026-09-10",
+      "time": "3:30 PM",
+      "location": "SEEC Auditorium (S125)",
+      "speaker": "Speaker name",
+      "affiliation": "Their institution",
+      "title": "Next week's talk title",
+      "abstract": ""
+    }
+  ],
+
+  "announcements": [
+    {
+      "title": "Welcome to ATOC",
+      "body": "The Department of Atmospheric and Oceanic Sciences studies weather, climate, air quality, and the oceans — from the boundary layer over Boulder to the circulation of the global atmosphere."
+    },
+    {
+      "title": "Find us",
+      "body": "Main office: SEEC building, CU Boulder East Campus. Department website: atoc.colorado.edu"
+    },
+    {
+      "title": "Prospective students",
+      "body": "We offer undergraduate degrees and PhD/MS programs in atmospheric and oceanic sciences. Graduate applications are typically due in December."
+    },
+    {
+      "title": "This slide is editable",
+      "body": "Anything posted here shows up on the lobby screen within ten minutes — seminars, deadlines, field campaign updates, congratulations."
+    }
+  ]
+}

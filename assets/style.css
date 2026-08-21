@@ -1,0 +1,221 @@
+/* ATOC lobby display — designed for a 1080p/4K landscape screen at ~10 ft viewing distance. */
+
+:root{
+  --gold:#CFB87C;          /* CU Boulder gold */
+  --gold-dim:#8d7c50;
+  --ink:#0b0d10;           /* page black */
+  --panel:#14181d;
+  --panel-2:#1b2027;
+  --line:#2b323b;
+  --text:#f2f4f7;
+  --muted:#9aa4b1;
+  --warn:#e8b53a;
+  --alert:#d9483b;
+
+  --pad: clamp(16px, 1.6vw, 34px);
+  --h1: clamp(30px, 3.5vw, 74px);
+  --h2: clamp(22px, 2.2vw, 46px);
+  --body: clamp(16px, 1.35vw, 30px);
+  --small: clamp(13px, 0.95vw, 21px);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--ink); color:var(--text);
+  font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow:hidden; cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block}
+
+/* Slow sub-pixel drift so a static logo never burns into an OLED/LCD panel. */
+/* Flex column rather than fixed grid rows: the alert bar comes and goes, and
+   a display:none row would otherwise hand the stage's 1fr to the wrong child. */
+#drift{
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  transition:transform 8s linear;
+  will-change:transform;
+}
+#topbar, #alertbar, #bottombar{flex:0 0 auto}
+
+/* ---------- top bar ---------- */
+#topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--pad);
+  padding:calc(var(--pad)*0.7) var(--pad);
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#000 0%, #0e1114 100%);
+}
+.brand{display:flex; align-items:center; gap:clamp(10px,1vw,20px); min-width:0}
+.brand-mark{
+  font-weight:800; letter-spacing:.06em;
+  font-size:clamp(20px,2vw,42px); color:var(--ink);
+  background:var(--gold); padding:.16em .42em; border-radius:.18em;
+}
+.brand-name{
+  display:flex; flex-direction:column; line-height:1.15;
+  font-size:clamp(15px,1.35vw,30px); font-weight:600; letter-spacing:.01em;
+}
+.brand-sub{font-size:.62em; font-weight:400; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
+.clock{text-align:right; line-height:1.05}
+#clock-time{font-size:clamp(22px,2.3vw,48px); font-weight:600; font-variant-numeric:tabular-nums}
+#clock-date{font-size:clamp(12px,0.95vw,21px); color:var(--muted); letter-spacing:.05em; text-transform:uppercase}
+
+/* ---------- weather alert banner ---------- */
+#alertbar{
+  padding:calc(var(--pad)*0.45) var(--pad);
+  background:var(--alert); color:#fff;
+  font-size:clamp(15px,1.3vw,28px); font-weight:600;
+  display:flex; gap:.7em; align-items:center;
+}
+#alertbar[hidden]{display:none}
+#alertbar .ab-tag{
+  background:rgba(0,0,0,.28); padding:.1em .55em; border-radius:.25em;
+  font-size:.8em; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
+}
+
+/* ---------- stage / slides ---------- */
+#stage{position:relative; overflow:hidden; flex:1 1 auto; min-height:0}
+.slide{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:var(--pad);
+  opacity:0; transition:opacity .7s ease;
+}
+.slide.in{opacity:1}
+
+.slide-head{margin-bottom:calc(var(--pad)*0.6); flex:0 0 auto}
+.slide-title{
+  font-size:var(--h2); font-weight:800; letter-spacing:-.01em; margin:0;
+  display:flex; align-items:baseline; gap:.5em; flex-wrap:wrap;
+}
+.slide-title::before{
+  content:""; width:.35em; height:.35em; background:var(--gold);
+  border-radius:2px; transform:translateY(-.08em);
+}
+.slide-sub{color:var(--muted); font-size:var(--small); letter-spacing:.05em; text-transform:uppercase; margin-top:.35em}
+.slide-body{flex:1 1 auto; min-height:0; display:flex}
+
+/* image slides */
+.img-wrap{flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; border-radius:6px}
+/* Square satellite sectors leave wide black bars on a 16:9 screen; a blurred
+   copy of the same (already-cached) frame fills them the way a video player does. */
+.img-bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter:blur(46px) saturate(1.25); opacity:.30; transform:scale(1.15); z-index:0}
+.img-wrap img:not(.img-bg){position:relative; z-index:1}
+/* width+height 100% (not max-*) so a small native image still fills the screen. */
+.img-wrap img{width:100%; height:100%; object-fit:contain; border-radius:6px}
+.img-wrap.cover img{width:100%; height:100%; object-fit:cover}
+.img-fail{color:var(--muted); font-size:var(--body); text-align:center; padding:2em}
+
+/* ---------- current weather ---------- */
+.wx{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:var(--pad); width:100%; min-height:0}
+.wx-now{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:calc(var(--pad)*0.9); display:flex; flex-direction:column; justify-content:center; gap:.35em; min-width:0;
+}
+.wx-temp{font-size:clamp(64px,9vw,190px); font-weight:300; line-height:.92; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.wx-temp sup{font-size:.34em; font-weight:400; vertical-align:super; color:var(--gold)}
+.wx-cond{font-size:var(--h2); font-weight:600; color:var(--gold)}
+.wx-place{font-size:var(--small); color:var(--muted); text-transform:uppercase; letter-spacing:.08em}
+.wx-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5em calc(var(--pad)*0.8); margin-top:.6em}
+.wx-grid div{display:flex; justify-content:space-between; gap:1em; font-size:var(--body); border-bottom:1px solid var(--line); padding:.3em 0}
+.wx-grid span{color:var(--muted)}
+.wx-grid b{font-weight:600; font-variant-numeric:tabular-nums}
+
+.wx-fc{display:flex; flex-direction:column; gap:calc(var(--pad)*0.45); min-height:0; overflow:hidden}
+.fc-row{
+  background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--gold-dim);
+  border-radius:10px; padding:calc(var(--pad)*0.55) calc(var(--pad)*0.7);
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.3em 1em; align-items:center; flex:1 1 0; min-height:0;
+}
+.fc-row.now{border-left-color:var(--gold); background:var(--panel-2)}
+.fc-name{font-size:var(--body); font-weight:600; color:var(--gold)}
+.fc-temp{font-size:calc(var(--body)*1.5); font-weight:600; font-variant-numeric:tabular-nums; grid-row:span 2}
+.fc-text{font-size:calc(var(--body)*0.86); color:var(--muted); line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+
+/* ---------- campus weather station ---------- */
+.stn{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:var(--pad); width:100%; min-height:0}
+.stn-chart{display:flex; flex-direction:column; gap:.5em; min-height:0}
+.stn-chart-head{display:flex; align-items:baseline; justify-content:space-between; gap:1em}
+.stn-chart-head h3{margin:0; font-size:var(--body); font-weight:600; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase}
+.stn-range{font-size:calc(var(--body)*1.1); font-weight:600; color:var(--gold); font-variant-numeric:tabular-nums}
+.spark-wrap{flex:1 1 auto; position:relative; min-height:0}
+.spark{width:100%; height:100%; display:block}
+.spark-now{position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 0 3px var(--ink)}
+.spark-line{fill:none; stroke:var(--gold); stroke-width:3px; stroke-linejoin:round; stroke-linecap:round}
+.spark-area{fill:var(--gold); opacity:.13; stroke:none}
+.stn-foot{display:flex; justify-content:space-between; gap:1em; font-size:var(--small); color:var(--muted)}
+
+/* ---------- embedded page ---------- */
+.iframe-wrap{flex:1 1 auto; min-height:0; width:100%; position:relative; overflow:hidden;
+  border:1px solid var(--line); border-radius:12px; background:#fff}
+.iframe-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+
+/* ---------- research / colloquium / announcements ---------- */
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:calc(var(--pad)*0.9); min-width:0;
+}
+.split{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:var(--pad); width:100%; min-height:0}
+.split.no-media{grid-template-columns:minmax(0,1fr)}
+.card.main{display:flex; flex-direction:column; justify-content:center}
+.media{border-radius:12px; overflow:hidden; background:var(--panel); border:1px solid var(--line); display:flex}
+.media img{width:100%; height:100%; object-fit:cover}
+
+.lede{font-size:var(--h1); font-weight:800; line-height:1.08; letter-spacing:-.015em; margin:0 0 .35em}
+.byline{font-size:var(--body); color:var(--gold); font-weight:600; margin-bottom:.5em}
+.prose{font-size:var(--body); line-height:1.45; color:#dfe4ea;
+  display:-webkit-box; -webkit-line-clamp:8; -webkit-box-orient:vertical; overflow:hidden}
+.tag{
+  display:inline-block; font-size:var(--small); letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink); background:var(--gold); padding:.18em .6em; border-radius:.25em; font-weight:700; margin-bottom:.6em;
+}
+.when{
+  display:flex; gap:.9em; align-items:center; flex-wrap:wrap;
+  font-size:calc(var(--body)*1.05); font-weight:600; margin:.2em 0 .6em;
+}
+.when .chip{background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:.25em .7em; white-space:nowrap}
+.when .chip.gold{color:var(--gold); border-color:var(--gold-dim)}
+.upnext{display:flex; flex-direction:column; gap:.55em; overflow:hidden}
+.upnext h3{margin:0 0 .2em; font-size:var(--small); letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+.upnext .u{border-top:1px solid var(--line); padding-top:.5em; font-size:calc(var(--body)*0.92); line-height:1.3}
+.upnext .u b{color:var(--gold); font-weight:600}
+.upnext .u span{color:var(--muted); display:block; font-size:.85em; margin-top:.15em}
+
+.list{display:grid; gap:calc(var(--pad)*0.55); width:100%; height:100%; align-content:stretch; overflow:hidden}
+.list .card{display:flex; flex-direction:column; justify-content:center; gap:.25em; min-height:0}
+.list h3{margin:0; font-size:calc(var(--body)*1.15); color:var(--gold)}
+.list p{margin:0; font-size:var(--body); color:#dfe4ea; line-height:1.4}
+
+.empty{margin:auto; text-align:center; color:var(--muted); font-size:var(--h2); font-weight:300}
+.boot-error{max-width:24em; font-size:var(--body); line-height:1.5}
+
+/* ---------- bottom bar + progress ---------- */
+#bottombar{
+  display:flex; align-items:center; justify-content:space-between; gap:var(--pad);
+  padding:calc(var(--pad)*0.55) var(--pad); border-top:1px solid var(--line); background:#0e1114;
+}
+.dots{display:flex; gap:.5em; align-items:center}
+.dot{width:.62em; height:.62em; border-radius:50%; background:#39414c; transition:background .3s, transform .3s}
+.dot.on{background:var(--gold); transform:scale(1.35)}
+.caption{font-size:var(--small); color:var(--muted); text-align:right; letter-spacing:.03em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+#progress{position:fixed; left:0; right:0; bottom:0; height:5px; background:#000}
+#progress-fill{height:100%; width:0; background:var(--gold)}
+
+#status{
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.85); border:1px solid var(--gold); color:var(--gold);
+  padding:.6em 1.2em; border-radius:8px; font-size:var(--h2); font-weight:600; letter-spacing:.05em;
+}
+#status[hidden]{display:none}
+
+/* Portrait screens: stack the two-column layouts. */
+@media (max-aspect-ratio: 1/1){
+  .wx, .split{grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr)}
+}

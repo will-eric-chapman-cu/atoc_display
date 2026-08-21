@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATOC Display</title>
+<meta name="description" content="Lobby display for the CU Boulder Department of Atmospheric and Oceanic Sciences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌩️</text></svg>">
+</head>
+<body>
+
+<div id="drift">
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark">ATOC</span>
+      <span class="brand-name">Atmospheric &amp; Oceanic Sciences<span class="brand-sub">University of Colorado Boulder</span></span>
+    </div>
+    <div class="clock">
+      <div id="clock-time">--:--</div>
+      <div id="clock-date">&nbsp;</div>
+    </div>
+  </header>
+
+  <div id="alertbar" hidden></div>
+
+  <main id="stage" aria-live="polite"></main>
+
+  <footer id="bottombar">
+    <div id="dots" class="dots"></div>
+    <div id="caption" class="caption"></div>
+  </footer>
+
+  <div id="progress"><div id="progress-fill"></div></div>
+
+</div>
+
+<div id="status" hidden></div>
+
+<noscript><p style="color:#fff;padding:2rem;font:1.5rem system-ui">This display requires JavaScript.</p></noscript>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
