@@ -192,7 +192,7 @@
       "_readme": "IRI \"ENSO Predictions Plume\" (figure 4 of their Quick Look). {YYYY}/{M0} is filled in at display time; IRI numbers months from zero, so August is 7. Falls back to last month if this month is not published yet.",
       "type": "image",
       "title": "ENSO Predictions Plume",
-      "subtitle": "Niño 3.4 SST anomaly forecast by the world’s dynamical and statistical models",
+      "subtitle": "Niño 3.4 SST anomaly forecast",
       "src": "https://ensoforecast2.iri.columbia.edu/figure4_plot/{YYYY}/{M0}",
       "refreshMinutes": 720,
       "credit": "International Research Institute for Climate and Society, Columbia University",
@@ -203,7 +203,7 @@
       "_readme": "IRI figure 7. The last path component is the number of past seasons drawn (22), not a date — lower it for a cleaner plot, raise it for more history.",
       "type": "image",
       "title": "ENSO Model Skill — 22 Seasons of Forecasts",
-      "subtitle": "Every model’s past Niño 3.4 forecast against what actually happened (black)",
+      "subtitle": "Every model’s past Niño 3.4 forecast against observations (black)",
       "src": "https://ensoforecast2.iri.columbia.edu/figure7_plot/{YYYY}/{M0}/22",
       "refreshMinutes": 720,
       "credit": "International Research Institute for Climate and Society, Columbia University",
@@ -282,19 +282,19 @@
   "announcements": [
     {
       "title": "Welcome to ATOC",
-      "body": "The Department of Atmospheric and Oceanic Sciences studies weather, climate, air quality, and the oceans — from the boundary layer over Boulder to the circulation of the global atmosphere."
+      "body": "The Department of Atmospheric and Oceanic Sciences."
     },
     {
       "title": "Find us",
       "body": "Main office: SEEC building, CU Boulder East Campus. Department website: atoc.colorado.edu"
     },
     {
-      "title": "Prospective students",
-      "body": "We offer undergraduate degrees and PhD/MS programs in atmospheric and oceanic sciences. Graduate applications are typically due in December."
+      "title": "Welcome Back",
+      "body": "Do your homework"
     },
     {
-      "title": "This slide is editable",
-      "body": "Anything posted here shows up on the lobby screen within ten minutes — seminars, deadlines, field campaign updates, congratulations."
+      "title": "We are serious",
+      "body": "Do your homework and do it correctly"
     }
   ]
 }
