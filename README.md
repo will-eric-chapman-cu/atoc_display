@@ -232,7 +232,142 @@ across the top of every slide automatically.
 
 ---
 
-## 5. Keyboard shortcuts
+## 5. Sending something in from your own account
+
+Anyone with a GitHub account can propose a highlight, a notice, or a photo. You do
+not need write access to this repository and you cannot break the board by trying —
+changes arrive as a pull request that someone merges.
+
+### The quick way, no terminal
+
+1. Open **[content.json](https://github.com/will-eric-chapman-cu/atoc_display/blob/main/content.json)**.
+2. Click the **pencil** icon. GitHub will say *"You need to fork this repository to
+   propose changes"* — click **Fork this repository**. That is the fork; it happens
+   in one click.
+3. Make your edit, scroll down, click **Propose changes**, then **Create pull request**.
+
+To include a photo this way, first open the **`images/`** folder *on your fork*,
+click **Add file → Upload files**, commit it, and then reference it from
+`content.json` as `images/your-file.jpg`.
+
+### The full way: fork, branch, pull request
+
+Everything below is copy-paste. Replace `YOUR-USERNAME` and pick your own branch name.
+
+**1. Fork and clone.** With the [GitHub CLI](https://cli.github.com):
+
+```bash
+gh repo fork will-eric-chapman-cu/atoc_display --clone
+cd atoc_display
+```
+
+Without it, click **Fork** on the repository page, then:
+
+```bash
+git clone https://github.com/YOUR-USERNAME/atoc_display.git
+cd atoc_display
+git remote add upstream https://github.com/will-eric-chapman-cu/atoc_display.git
+```
+
+Either way, check you have both remotes — `origin` is your fork, `upstream` is the
+department copy:
+
+```bash
+git remote -v
+```
+
+**2. Branch from what is currently on the screen.**
+
+```bash
+git fetch upstream
+git checkout -B highlight/your-name upstream/main
+```
+
+**3. Add a photo, resized.** A 3 MB phone photo makes the board slow and looks no
+better, so scale the long edge to about 1600 px:
+
+```bash
+# macOS
+sips -Z 1600 ~/Desktop/your-photo.jpg --out images/your-name-award.jpg
+
+# Linux, with ImageMagick
+convert ~/Desktop/your-photo.jpg -resize '1600x1600>' images/your-name-award.jpg
+```
+
+**4. Edit `content.json`.** For an award, a paper, or student news, add an entry to
+the `"research"` list — that is the **ATOC Highlights** slide, and each entry gets
+the whole screen:
+
+```json
+{
+  "tag": "New publication",
+  "title": "One plain-language line about the result",
+  "people": "Your Name · ATOC",
+  "blurb": "Two or three sentences a visitor with no atmospheric science background could follow. About 60 words.",
+  "image": "images/your-name-award.jpg"
+}
+```
+
+For a deadline or a seminar notice, add to `"announcements"` instead — `title` and
+`body`, with an optional `image`. Leave `"image": ""` if you have no picture.
+
+Mind the JSON: double quotes, a comma between entries, **no** comma after the last one.
+
+**5. Check it and look at it.**
+
+```bash
+python3 -m json.tool content.json > /dev/null && echo "JSON is valid"
+python3 -m http.server 8000
+```
+
+Open <http://localhost:8000/?seconds=5> and press `→` until you reach your slide.
+`Ctrl+C` stops the server.
+
+**6. Commit and push to your fork.**
+
+```bash
+git add content.json images/
+git commit -m "Add highlight: Winters NSF CAREER award"
+git push -u origin highlight/your-name
+```
+
+**7. Open the pull request.**
+
+```bash
+gh pr create --repo will-eric-chapman-cu/atoc_display --base main --fill
+```
+
+Or just open the URL that `git push` prints in its output — it links straight to the
+"compare & pull request" page.
+
+### After it is merged
+
+GitHub Pages rebuilds within a minute or two. The lobby laptop re-reads `content.json`
+every ten minutes and reloads itself entirely at 3 AM, so nobody has to walk over to
+the mailbox and touch it.
+
+### Keeping your fork current for next time
+
+```bash
+git checkout main
+git fetch upstream
+git merge --ff-only upstream/main
+git push
+```
+
+### Before you open the PR
+
+- `python3 -m json.tool content.json` runs clean.
+- Photos are about 1600 px on the long edge and well under a megabyte.
+- The blurb reads to someone outside the field — this screen faces the front door.
+- You have the right to post the photo, and anyone in it is happy to be on a public
+  screen and on a public GitHub repository.
+- You have not edited anything in `assets/` unless you actually meant to change how
+  the board behaves.
+
+---
+
+## 6. Keyboard shortcuts
 
 Handy when someone is standing at the screen with a keyboard.
 
@@ -252,7 +387,7 @@ seconds a slide. They apply to that page load only and change nothing in `conten
 
 ---
 
-## 6. If something looks wrong
+## 7. If something looks wrong
 
 **One slide says "Imagery temporarily unavailable."** The upstream NOAA server is
 having a moment. It fixes itself; the slideshow keeps going regardless.
