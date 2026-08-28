@@ -209,12 +209,11 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Severe Weather Outlook — Today | NOAA/NWS SPC |
 | Mesoscale Rapid Scan — One-Minute Imagery | UW–Madison AOS |
 | 8–14 Day Temperature Outlook | NOAA CPC |
-| ENSO Predictions Plume | IRI, Columbia University |
 | ENSO Model Skill — 22 Seasons of Forecasts | IRI, Columbia University |
 | Atmospheric CO2 at Mauna Loa | NOAA GML (Boulder) |
 | 8–14 Day Precipitation Outlook | NOAA CPC |
 
-15 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
+14 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
 `duration`, so `defaultDuration` under `site` changes the pace of the whole thing.
 
 Currently parked (set `"enabled": true` to bring one back):
@@ -225,6 +224,7 @@ Currently parked (set `"enabled": true` to bring one back):
 - **Day Cloud Phase Distinction RGB** — ice cloud, water cloud and bare ground separated by color
 - **Air Mass RGB — Southwest** — dry stratospheric intrusions, jet streaks and frontal boundaries
 - **GOES-19 GeoColor — Continental U.S.** — the full-CONUS GeoColor still
+- **ENSO Predictions Plume** — the model plume; the 22-season hindcast covers ENSO instead
 - **Campus Weather Dashboard** — the full Quarto dashboard from the station, embedded live (~8 MB)
 
 If a severe weather watch or warning is issued for Boulder, a red banner appears

@@ -196,7 +196,7 @@
       "src": "https://ensoforecast2.iri.columbia.edu/figure4_plot/{YYYY}/{M0}",
       "refreshMinutes": 720,
       "credit": "International Research Institute for Climate and Society, Columbia University",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "iri-enso-history",
