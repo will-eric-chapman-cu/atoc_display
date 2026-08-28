@@ -561,22 +561,66 @@ function renderColloquium(slide) {
   return frame(slide, split, slide.credit);
 }
 
+/* Announcements paginate: each showing takes the next pageful, so the list can
+   grow without the slide turning into a wall of small print. An item with a
+   photo is "featured" — it spans the full width and costs two slots. */
 function renderList(slide) {
-  const items = slide.source === 'announcements'
-    ? state.content?.announcements
-    : slide.items;
-  if (!items || !items.length) {
+  const raw = (slide.source === 'announcements' ? state.content?.announcements : slide.items) || [];
+  // Blank-but-present entries (a lone space, say) should not render an empty card.
+  const items = raw.filter((it) => clean(it.title).trim() || clean(it.body).trim() || it.image);
+  if (!items.length) {
     return frame(slide, el('div', 'empty', 'Nothing posted right now.'), slide.credit);
   }
+
+  const per = Number(slide.perPage) > 0 ? Number(slide.perPage) : 4;
+  const pages = [];
+  let page = [], used = 0;
+  for (const it of items) {
+    const cost = it.image ? 2 : 1;
+    if (page.length && used + cost > per) { pages.push(page); page = []; used = 0; }
+    page.push(it);
+    used += cost;
+  }
+  if (page.length) pages.push(page);
+
+  const key = 'list:' + (slide.id || 'x');
+  const at = state.cursors[key] == null ? 0 : state.cursors[key];
+  state.cursors[key] = (at + 1) % pages.length;
+  const shown = pages[at % pages.length];
+
+  const featured = shown.filter((it) => it.image);
+  const rest = shown.filter((it) => !it.image);
+
   const list = el('div', 'list');
-  list.style.gridTemplateColumns = items.length > 3 ? 'repeat(2, minmax(0,1fr))' : 'minmax(0,1fr)';
-  for (const it of items.slice(0, 6)) {
+  list.style.gridTemplateColumns = rest.length > 1 ? 'repeat(2, minmax(0,1fr))' : 'minmax(0,1fr)';
+  if (featured.length && rest.length) {
+    list.style.gridTemplateRows = `1.6fr repeat(${Math.ceil(rest.length / 2)}, 1fr)`;
+  }
+
+  for (const it of featured) {
+    const card = el('div', 'card feat');
+    const img = new Image();
+    img.src = it.image;
+    img.alt = '';
+    img.onerror = () => img.remove();     // a missing photo must not blank the notice
+    card.append(img);
+    const txt = el('div', 'feat-text');
+    txt.append(el('h3', null, clean(it.title)));
+    if (it.body) txt.append(el('p', null, clean(it.body)));
+    card.append(txt);
+    list.append(card);
+  }
+  for (const it of rest) {
     const card = el('div', 'card');
     card.append(el('h3', null, clean(it.title)));
     if (it.body) card.append(el('p', null, clean(it.body)));
     list.append(card);
   }
-  return frame(slide, list, slide.credit);
+
+  const cap = pages.length > 1
+    ? `${slide.credit ? slide.credit + ' · ' : ''}${at + 1} of ${pages.length}`
+    : slide.credit;
+  return frame(slide, list, cap);
 }
 
 const RENDERERS = {

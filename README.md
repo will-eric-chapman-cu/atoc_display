@@ -3,7 +3,7 @@
 A one-page kiosk slideshow for the monitor in the ATOC entrance. It cycles through
 live satellite imagery, Colorado radar, our own campus weather station, current
 conditions, research highlights, the colloquium schedule, and department notices —
-30 seconds each, forever, with no clicking.
+25 seconds each, forever, with no clicking.
 
 It is plain HTML/CSS/JS on GitHub Pages. No build step, no server, no accounts, no
 cost. Once it is running, the only thing anyone ever has to touch is `content.json`.
@@ -106,10 +106,12 @@ It must stay valid JSON: text in `"double quotes"`, a comma between entries, **n
 comma after the last one. If the screen goes blank after an edit, that is almost
 always a stray comma — GitHub will usually flag it in the editor.
 
-### Research highlights
+### Highlights (awards, publications, people)
 
-The `"research"` list rotates: each time the highlight slide comes around it shows
-the next entry, so a handful of them will carry the screen through the day.
+The `"research"` list feeds the **ATOC Highlights** slide. It rotates: each time the
+slide comes around it shows the next entry, so a handful will carry the screen
+through the day. Awards, new papers, and student news all belong here — each entry
+gets the whole screen, with its picture beside it.
 
 ```json
 {
@@ -121,8 +123,14 @@ the next entry, so a handful of them will carry the screen through the day.
 }
 ```
 
-`image` is optional — either a full `https://` URL or a file you have added to an
-`images/` folder in the repository. Leave it as `""` for a text-only slide.
+`image` is optional — either a full `https://` URL or a file in this repository's
+`images/` folder, written as `images/yourfile.jpg`. Leave it `""` for a text-only
+entry, which then uses the full width. Pictures are shown whole, never cropped, so
+a figure from a paper stays readable.
+
+**Adding a picture:** drop the file into `images/` (drag it into the folder on
+github.com), then reference it by name. Resize big phone photos to about 1600 px on
+the long edge first — a 3 MB photo makes the page slow for no visible gain.
 
 ### Colloquium schedule
 
@@ -145,9 +153,14 @@ Dates must be `YYYY-MM-DD`.
 
 ### Department notices
 
-The `"announcements"` list is the free-form slide — deadlines, congratulations,
-field campaign updates, "the espresso machine is fixed". Each entry is a `title`
-and a `body`.
+The `"announcements"` list is the free-form slide — deadlines, seminars, field
+campaign updates, "the espresso machine is fixed". Each entry is a `title` and a
+`body`, and may also carry an `image`.
+
+The slide paginates: it shows a few notices at a time and moves to the next pageful
+each time it comes around, so the list can grow without the text shrinking. An entry
+with a picture spans the full width and counts as two slots. `perPage` on the slide
+(default 4) controls how many fit on a page.
 
 ---
 
@@ -186,32 +199,32 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Slide | Source |
 |---|---|
 | GOES-19 GeoColor — Colorado & the Northern Rockies | NOAA/NESDIS STAR |
-| Colorado Radar — Denver/Boulder (KFTG) | NOAA/NWS NEXRAD |
 | Current Conditions — Boulder | api.weather.gov |
-| Our Own Weather Station | willychap.github.io/weather |
-| ATOC Research Highlight | `content.json` |
+| Skywatch Weather Station | willychap.github.io/weather |
+| ATOC Highlights | `content.json` |
 | Colorado Visible Satellite — Animated | UW–Madison AOS |
 | Colorado Reflectivity Composite — Animated | UW–Madison AOS |
 | Department Notices | `content.json` |
-| Day Cloud Phase Distinction RGB | UW–Madison AOS |
 | GOES-19 Full Disk | NOAA/NESDIS STAR |
 | Severe Weather Outlook — Today | NOAA/NWS SPC |
-| Air Mass RGB — Southwest | UW–Madison AOS |
 | Mesoscale Rapid Scan — One-Minute Imagery | UW–Madison AOS |
-| GOES-19 GeoColor — Continental U.S. | NOAA/NESDIS STAR |
 | 8–14 Day Temperature Outlook | NOAA CPC |
 | ENSO Predictions Plume | IRI, Columbia University |
 | ENSO Model Skill — 22 Seasons of Forecasts | IRI, Columbia University |
 | Atmospheric CO2 at Mauna Loa | NOAA GML (Boulder) |
+| 8–14 Day Precipitation Outlook | NOAA CPC |
 
-18 slides at 30 seconds is a **9-minute cycle**. No slide sets its own
+15 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
 `duration`, so `defaultDuration` under `site` changes the pace of the whole thing.
 
 Currently parked (set `"enabled": true` to bring one back):
 
+- **Colorado Radar — Denver/Boulder (KFTG)** — the NWS single-site radar; the UW composite covers the same ground
 - **Colorado Visible Satellite — High Resolution** — a single still frame instead of the animated loop; lighter on an old laptop
 - **ATOC Colloquium** — off until the `colloquia` list holds real talks instead of the examples
-- **8–14 Day Precipitation Outlook** — the precipitation twin of the 8–14 day temperature outlook
+- **Day Cloud Phase Distinction RGB** — ice cloud, water cloud and bare ground separated by color
+- **Air Mass RGB — Southwest** — dry stratospheric intrusions, jet streaks and frontal boundaries
+- **GOES-19 GeoColor — Continental U.S.** — the full-CONUS GeoColor still
 - **Campus Weather Dashboard** — the full Quarto dashboard from the station, embedded live (~8 MB)
 
 If a severe weather watch or warning is issued for Boulder, a red banner appears

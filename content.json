@@ -1,7 +1,7 @@
 {
   "_readme": "Everything on the display is controlled from this file. Edit it on github.com, commit, and the screen picks up the change within 10 minutes. Keep it valid JSON: double quotes, commas between items, no trailing comma.",
   "site": {
-    "defaultDuration": 30,
+    "defaultDuration": 25,
     "timezone": "America/Denver",
     "_readme": "defaultDuration is how many seconds each slide stays up. No slide sets its own, so this one number controls the whole rotation."
   },
@@ -61,8 +61,8 @@
     {
       "id": "research",
       "type": "research",
-      "title": "ATOC Research Highlight",
-      "subtitle": "A rotating look at work from our department",
+      "title": "ATOC Highlights",
+      "subtitle": "Awards, publications, and people in the department",
       "enabled": true
     },
     {
@@ -119,7 +119,7 @@
       "id": "wisc-cloudphase",
       "type": "image",
       "title": "Day Cloud Phase Distinction RGB",
-      "subtitle": "Ice cloud, water cloud and bare ground separated by colour",
+      "subtitle": "Ice cloud, water cloud and bare ground separated by color",
       "src": "https://whirlwind.aos.wisc.edu/~wxp/goes16/multi_day_cloud_phase_rgb/sw/latest_sw_1.jpg",
       "refreshMinutes": 10,
       "credit": "UW–Madison AOS · GOES-East ABI multispectral RGB",
@@ -196,7 +196,7 @@
       "src": "https://ensoforecast2.iri.columbia.edu/figure4_plot/{YYYY}/{M0}",
       "refreshMinutes": 720,
       "credit": "International Research Institute for Climate and Society, Columbia University",
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "iri-enso-history",
@@ -243,18 +243,31 @@
   ],
   "research": [
     {
-      "_readme": "EXAMPLE ENTRIES — replace with real ATOC work. 'image' is optional: use a full https:// URL, or drop a file in the images/ folder and write \"images/yourfile.jpg\".",
-      "tag": " ",
-      "title": " ",
-      "people": " ",
-      "blurb": " ",
+      "tag": "Student award",
+      "title": "Genevieve Clow wins the CESM Graduate Student Award",
+      "people": "Genevieve Clow · ATOC graduate student",
+      "blurb": "Presented at the CESM Workshop in Boulder in June 2026. The award recognizes outstanding graduate research in Earth system modeling.",
+      "image": "images/clow-cesm-award.jpg"
+    },
+    {
+      "tag": "New publication",
+      "title": "What actually drives melt on the Greenland ice sheet",
+      "people": "Ziqi Yin · ATOC graduate student",
+      "blurb": "Yin and co-authors used causal discovery to identify which surface energy balance terms drive surface melt on the Greenland ice sheet. Geophysical Research Letters, May 2026 — doi.org/10.1029/2025GL119928",
+      "image": "images/yin-greenland-causal-graph.png"
+    },
+    {
+      "tag": "NSF CAREER Award",
+      "title": "Andrew Winters receives an NSF CAREER Award",
+      "people": "Andrew Winters · ATOC",
+      "blurb": "The award funds work on the global characteristics, predictability, and future changes of polar–subtropical jet stream superposition events.",
       "image": ""
     },
     {
-      "tag": " ",
-      "title": " ",
-      "people": " ",
-      "blurb": " ",
+      "tag": "AMS honors",
+      "title": "Three American Meteorological Society honors",
+      "people": "CUBAMS · Peter Blanken · Matthew Shupe",
+      "blurb": "CUBAMS, the CU Boulder AMS student chapter, won Local Student Chapter of the Year. Peter Blanken (Geography, who teaches an ATOC course) and Matthew Shupe (CIRES) were both elected AMS Fellows.",
       "image": ""
     }
   ],
