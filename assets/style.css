@@ -143,8 +143,13 @@ img{display:block}
 .stn-chart-head h3{margin:0; font-size:var(--body); font-weight:600; color:var(--muted);
   letter-spacing:.06em; text-transform:uppercase}
 .stn-range{font-size:calc(var(--body)*1.1); font-weight:600; color:var(--gold); font-variant-numeric:tabular-nums}
-.spark-wrap{flex:1 1 auto; position:relative; min-height:0}
-.spark{width:100%; height:100%; display:block}
+.spark-wrap{flex:1 1 auto; min-height:0; display:flex; gap:.6em}
+.spark-axis{position:relative; flex:0 0 auto; width:3.1em;
+  font-size:var(--small); color:var(--muted); font-variant-numeric:tabular-nums}
+.spark-axis span{position:absolute; right:0; transform:translateY(-50%); white-space:nowrap}
+.spark-plot{position:relative; flex:1 1 auto; min-width:0}
+.spark-grid{position:absolute; left:0; right:0; height:0; border-top:1px solid var(--line)}
+.spark{width:100%; height:100%; display:block; position:relative; z-index:1}
 .spark-now{position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%;
   background:var(--gold); box-shadow:0 0 0 3px var(--ink)}
 .spark-line{fill:none; stroke:var(--gold); stroke-width:3px; stroke-linejoin:round; stroke-linecap:round}

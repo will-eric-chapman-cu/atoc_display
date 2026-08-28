@@ -279,28 +279,67 @@ function parseStamp(s) {
   return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
 }
 
+/* Round tick values sitting inside the plotted range, so the axis reads 70/80/90
+   rather than 68.4/79.1. Ticks are placed within a lightly padded data range
+   rather than the range being snapped out to the ticks — otherwise a high of
+   90.1 would stretch the axis to 100 and waste half the panel. */
+function niceTicks(lo, hi, target) {
+  const raw = ((hi - lo) || 1) / (target || 5);
+  const steps = [0.5, 1, 2, 5, 10, 20, 25, 50, 100];
+  let step = steps.reduce((best, s) => (Math.abs(s - raw) < Math.abs(best - raw) ? s : best), steps[0]);
+  let ticks = [];
+  for (;;) {
+    ticks = [];
+    const first = Math.ceil(lo / step) * step;
+    for (let v = first; v <= hi + 1e-9; v += step) ticks.push(Math.round(v * 100) / 100);
+    const next = steps[steps.indexOf(step) + 1];
+    if (ticks.length <= 8 || !next) break;
+    step = next;
+  }
+  return ticks;
+}
+
 /* Time is the x-axis, not sample index: the station record has gaps, and
    spacing points evenly would bend the diurnal cycle out of shape. Gaps longer
-   than `gapMinutes` break the line rather than being bridged by a fake segment. */
-function sparkline(points, gapMinutes) {
+   than `gapMinutes` break the line rather than being bridged by a fake segment.
+   The SVG is deliberately stretched to fill its box, so anything that must not
+   distort — axis labels, gridlines, the "now" dot — is HTML positioned over it. */
+function sparkline(points, gapMinutes, unit) {
   const NS = 'http://www.w3.org/2000/svg';
   const W = 1000, H = 260, pad = 14;
   const wrap = el('div', 'spark-wrap');
+  const axis = el('div', 'spark-axis');
+  const plot = el('div', 'spark-plot');
+  wrap.append(axis, plot);
+
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('preserveAspectRatio', 'none');
   svg.setAttribute('class', 'spark');
-  wrap.append(svg);
+  plot.append(svg);
   if (points.length < 2) return wrap;
 
   const vs = points.map((p) => p.v);
-  const lo = Math.min(...vs), hi = Math.max(...vs);
-  const span = hi - lo || 1;
+  const dLo = Math.min(...vs), dHi = Math.max(...vs);
+  const headroom = ((dHi - dLo) || 1) * 0.08;
+  const lo = dLo - headroom, hi = dHi + headroom;
+  const ticks = niceTicks(lo, hi);
+  const span = (hi - lo) || 1;
   const t0 = points[0].t, t1 = points[points.length - 1].t;
   const tSpan = (t1 - t0) || 1;
   const x = (t) => pad + ((t - t0) / tSpan) * (W - pad * 2);
   const y = (v) => H - pad - ((v - lo) / span) * (H - pad * 2);
+  const pct = (v) => (y(v) / H * 100).toFixed(2) + '%';
   const gapMs = (gapMinutes || 30) * 60000;
+
+  for (const v of ticks) {
+    const line = el('div', 'spark-grid');
+    line.style.top = pct(v);
+    plot.append(line);
+    const label = el('span', null, Math.round(v) + (unit || ''));
+    label.style.top = pct(v);
+    axis.append(label);
+  }
 
   let line = '', area = '', segStart = null, prev = null;
   const closeSeg = () => {
@@ -310,10 +349,9 @@ function sparkline(points, gapMinutes) {
   };
   for (const p of points) {
     const isBreak = prev == null || p.t - prev > gapMs;
-    const cmd = isBreak ? 'M' : 'L';
     if (isBreak) { closeSeg(); segStart = p.t; area += ` M ${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`; }
     else { area += ` L ${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`; }
-    line += ` ${cmd} ${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`;
+    line += ` ${isBreak ? 'M' : 'L'} ${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`;
     prev = p.t;
   }
   closeSeg();
@@ -329,13 +367,11 @@ function sparkline(points, gapMinutes) {
   lineEl.setAttribute('vector-effect', 'non-scaling-stroke');
   svg.append(lineEl);
 
-  // The viewBox is stretched, so a marker drawn inside it would come out oval;
-  // position the "now" dot in CSS instead.
   const last = points[points.length - 1];
   const dot = el('div', 'spark-now');
   dot.style.left = (x(last.t) / W * 100).toFixed(2) + '%';
-  dot.style.top = (y(last.v) / H * 100).toFixed(2) + '%';
-  wrap.append(dot);
+  dot.style.top = pct(last.v);
+  plot.append(dot);
   return wrap;
 }
 
@@ -400,7 +436,7 @@ function renderStation(slide) {
   ch.append(el('h3', null, 'Temperature, past ' + (cfg.hours || 24) + ' hours'));
   ch.append(el('div', 'stn-range', (lo != null ? Math.round(lo) : '--') + '° to ' + (hi != null ? Math.round(hi) : '--') + '°'));
   chart.append(ch);
-  chart.append(sparkline(pts, cfg.gapMinutes || 30));
+  chart.append(sparkline(pts, cfg.gapMinutes || 30, '°'));
   const foot = el('div', 'stn-foot');
   foot.append(el('span', null, lastTime
     ? 'Last reading ' + lastTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
