@@ -42,7 +42,7 @@
       "src": "https://radar.weather.gov/ridge/standard/KFTG_loop.gif",
       "refreshMinutes": 5,
       "credit": "NOAA/NWS NEXRAD · radar.weather.gov",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "weather-now",
@@ -175,7 +175,7 @@
       "src": "https://cdn.star.nesdis.noaa.gov/GOES19/ABI/CONUS/GEOCOLOR/1250x750.jpg",
       "refreshMinutes": 10,
       "credit": "NOAA/NESDIS STAR · GOES-19 ABI GeoColor",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "cpc-temp",
@@ -196,7 +196,7 @@
       "src": "https://ensoforecast2.iri.columbia.edu/figure4_plot/{YYYY}/{M0}",
       "refreshMinutes": 720,
       "credit": "International Research Institute for Climate and Society, Columbia University",
-      "enabled": true
+      "enabled": false
     },
     {
       "id": "iri-enso-history",
@@ -227,7 +227,7 @@
       "src": "https://www.cpc.ncep.noaa.gov/products/predictions/814day/814prcp.new.gif",
       "refreshMinutes": 180,
       "credit": "NOAA Climate Prediction Center",
-      "enabled": false
+      "enabled": true
     },
     {
       "id": "station-dashboard",
