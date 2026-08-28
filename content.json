@@ -244,17 +244,17 @@
   "research": [
     {
       "_readme": "EXAMPLE ENTRIES — replace with real ATOC work. 'image' is optional: use a full https:// URL, or drop a file in the images/ folder and write \"images/yourfile.jpg\".",
-      "tag": "Example — replace me",
-      "title": "An ATOC Faculty Wins First Place",
-      "people": "Will Chapman ATOC",
-      "blurb": "Will Chapman: Voted Best Ever.",
+      "tag": " ",
+      "title": " ",
+      "people": " ",
+      "blurb": " ",
       "image": ""
     },
     {
-      "tag": "Example — replace me",
-      "title": "An ATOC Faculty Wins First Place",
-      "people": "Will Chapman ATOC",
-      "blurb": "Will Chapman: Still Voted Best Ever.",
+      "tag": " ",
+      "title": " ",
+      "people": " ",
+      "blurb": " ",
       "image": ""
     }
   ],
