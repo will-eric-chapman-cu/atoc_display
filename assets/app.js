@@ -630,7 +630,8 @@ function renderList(slide) {
   const list = el('div', 'list');
   list.style.gridTemplateColumns = rest.length > 1 ? 'repeat(2, minmax(0,1fr))' : 'minmax(0,1fr)';
   if (featured.length && rest.length) {
-    list.style.gridTemplateRows = `1.6fr repeat(${Math.ceil(rest.length / 2)}, 1fr)`;
+    // The featured row carries a photo or a flyer, so give it most of the panel.
+    list.style.gridTemplateRows = `2.2fr repeat(${Math.ceil(rest.length / 2)}, 1fr)`;
   }
 
   for (const it of featured) {

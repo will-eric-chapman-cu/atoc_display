@@ -294,6 +294,11 @@
   ],
   "announcements": [
     {
+      "title": "Distinguished Lecture: Marine Carbon Dioxide Removal",
+      "body": "Dr. Scott Doney, University of Virginia — Friday, September 4, 11:00 AM, SEEC S228 (Seivers Room), East Campus. Which ocean-based carbon removal approaches show promise, and the scientific and engineering gaps that still stand between them and deployment at scale. Hosted by ATOC.",
+      "image": "images/doney-seminar-flyer.jpg"
+    },
+    {
       "title": "Welcome to ATOC",
       "body": "The Department of Atmospheric and Oceanic Sciences."
     },
