@@ -134,22 +134,28 @@ the long edge first — a 3 MB photo makes the page slow for no visible gain.
 
 ### Colloquium schedule
 
-Paste in the whole semester at once. Entries whose date has passed disappear on their
-own, and the slide shows the next talk plus a short "also coming up" list.
+Paste in the whole semester at once. Entries whose date has passed disappear on
+their own, so nothing has to be taken down after a talk. The slide shows the next
+talk, and either its flyer or a short "also coming up" list.
 
 ```json
 {
-  "date": "2026-09-03",
-  "time": "3:30 PM",
-  "location": "SEEC Auditorium (S125)",
-  "speaker": "Jane Doe",
-  "affiliation": "NCAR",
-  "title": "Title of the talk",
-  "abstract": "Optional one-line teaser."
+  "date": "2026-09-04",
+  "time": "11:00 AM",
+  "location": "SEEC S228 (Seivers Room)",
+  "speaker": "Dr. Scott Doney",
+  "affiliation": "University of Virginia",
+  "title": "Marine Carbon Dioxide Removal",
+  "tag": "Distinguished Lecture",
+  "abstract": "Optional two-sentence teaser.",
+  "image": "images/doney-seminar-flyer.jpg"
 }
 ```
 
-Dates must be `YYYY-MM-DD`.
+Dates must be `YYYY-MM-DD`. `tag` overrides the "Next colloquium" label — use it for
+a distinguished lecture or a special seminar. `image` is optional: point it at a
+flyer in `images/` and it appears beside the details. When a talk has a flyer, any
+later talks move to a single line under the abstract instead of their own panel.
 
 ### Department notices
 
@@ -203,6 +209,7 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Skywatch Weather Station | willychap.github.io/weather |
 | ATOC Highlights | `content.json` |
 | Colorado Visible Satellite — Animated | UW–Madison AOS |
+| ATOC Colloquium | `content.json` |
 | Colorado Reflectivity Composite — Animated | UW–Madison AOS |
 | Department Notices | `content.json` |
 | GOES-19 Full Disk | NOAA/NESDIS STAR |
@@ -213,14 +220,13 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | Atmospheric CO2 at Mauna Loa | NOAA GML (Boulder) |
 | 8–14 Day Precipitation Outlook | NOAA CPC |
 
-14 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
+15 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
 `duration`, so `defaultDuration` under `site` changes the pace of the whole thing.
 
 Currently parked (set `"enabled": true` to bring one back):
 
 - **Colorado Radar — Denver/Boulder (KFTG)** — the NWS single-site radar; the UW composite covers the same ground
 - **Colorado Visible Satellite — High Resolution** — a single still frame instead of the animated loop; lighter on an old laptop
-- **ATOC Colloquium** — off until the `colloquia` list holds real talks instead of the examples
 - **Day Cloud Phase Distinction RGB** — ice cloud, water cloud and bare ground separated by color
 - **Air Mass RGB — Southwest** — dry stratospheric intrusions, jet streaks and frontal boundaries
 - **GOES-19 GeoColor — Continental U.S.** — the full-CONUS GeoColor still

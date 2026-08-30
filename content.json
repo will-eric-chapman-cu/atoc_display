@@ -92,8 +92,7 @@
       "type": "colloquium",
       "title": "ATOC Colloquium",
       "subtitle": "Talks, seminars, and department events",
-      "enabled": false,
-      "_readme": "Flip enabled to true once real talks are in the \"colloquia\" list below. It is off while that list still holds example entries."
+      "enabled": true
     },
     {
       "id": "wisc-radar-co",
@@ -273,31 +272,19 @@
   ],
   "colloquia": [
     {
-      "_readme": "EXAMPLE ENTRIES — replace with the real schedule. Past dates disappear automatically, so it is safe to paste in the whole semester at once. Date format must be YYYY-MM-DD.",
-      "date": "2026-09-03",
-      "time": "3:30 PM",
-      "location": "SEEC Auditorium (S125)",
-      "speaker": "Speaker name",
-      "affiliation": "Their institution",
-      "title": "The title of the talk goes here",
-      "abstract": "An optional one- or two-sentence teaser. Leave this out entirely if you would rather keep the slide clean."
-    },
-    {
-      "date": "2026-09-10",
-      "time": "3:30 PM",
-      "location": "SEEC Auditorium (S125)",
-      "speaker": "Speaker name",
-      "affiliation": "Their institution",
-      "title": "Next week's talk title",
-      "abstract": ""
+      "_readme": "Past dates disappear on their own, so it is safe to paste in the whole semester. Date must be YYYY-MM-DD. \"image\" is optional — a flyer in images/ shows beside the details.",
+      "date": "2026-09-04",
+      "time": "11:00 AM",
+      "location": "SEEC S228 (Seivers Room)",
+      "speaker": "Dr. Scott Doney",
+      "affiliation": "University of Virginia",
+      "title": "Marine Carbon Dioxide Removal",
+      "tag": "Distinguished Lecture",
+      "abstract": "Stabilizing global climate will likely require removing carbon dioxide from the atmosphere as well as cutting emissions. Ocean-based approaches show promise, but none is ready to deploy at scale: gaps remain in efficacy, permanence, verification, cost, and governance.",
+      "image": "images/doney-seminar-flyer.jpg"
     }
   ],
   "announcements": [
-    {
-      "title": "Distinguished Lecture: Marine Carbon Dioxide Removal",
-      "body": "Dr. Scott Doney, University of Virginia — Friday, September 4, 11:00 AM, SEEC S228 (Seivers Room), East Campus. Which ocean-based carbon removal approaches show promise, and the scientific and engineering gaps that still stand between them and deployment at scale. Hosted by ATOC.",
-      "image": "images/doney-seminar-flyer.jpg"
-    },
     {
       "title": "Welcome to ATOC",
       "body": "The Department of Atmospheric and Oceanic Sciences."

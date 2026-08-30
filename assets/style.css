@@ -190,6 +190,8 @@ img{display:block}
 }
 .when .chip{background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:.25em .7em; white-space:nowrap}
 .when .chip.gold{color:var(--gold); border-color:var(--gold-dim)}
+.also{margin-top:.7em; font-size:calc(var(--body)*0.9); color:var(--muted); line-height:1.35}
+.also b{color:var(--gold); font-weight:600}
 .upnext{display:flex; flex-direction:column; gap:.55em; overflow:hidden}
 .upnext h3{margin:0 0 .2em; font-size:var(--small); letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
 .upnext .u{border-top:1px solid var(--line); padding-top:.5em; font-size:calc(var(--body)*0.92); line-height:1.3}

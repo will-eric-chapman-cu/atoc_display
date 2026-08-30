@@ -558,7 +558,7 @@ function upcoming(list) {
     .sort((a, b) => a._d - b._d);
 }
 
-function renderColloquium(slide) {
+async function renderColloquium(slide) {
   const list = upcoming(state.content?.colloquia);
   if (!list.length) {
     return frame(slide,
@@ -566,13 +566,17 @@ function renderColloquium(slide) {
       slide.credit);
   }
   const next = list[0];
-  const split = el('div', list.length > 1 ? 'split' : 'split no-media');
+  const later = list.slice(1, 5);
+  // The right-hand panel shows the flyer when there is one, otherwise what is
+  // coming up after this talk.
+  const hasPanel = Boolean(next.image) || later.length > 0;
+  const split = el('div', hasPanel ? 'split' : 'split no-media');
 
   const card = el('div', 'card main');
   card.append(el('div', 'tag', next.tag || 'Next colloquium'));
   const when = el('div', 'when');
-  const day = next._d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const c1 = el('span', 'chip gold', day); when.append(c1);
+  when.append(el('span', 'chip gold',
+    next._d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })));
   if (next.time) when.append(el('span', 'chip', next.time));
   if (next.location) when.append(el('span', 'chip', next.location));
   card.append(when);
@@ -580,15 +584,29 @@ function renderColloquium(slide) {
   const who = [clean(next.speaker), clean(next.affiliation)].filter(Boolean).join(' · ');
   if (who) card.append(el('div', 'byline', who));
   if (next.abstract) card.append(el('p', 'prose', clean(next.abstract)));
+
+  // With a flyer taking the panel, later talks still get a line under the text.
+  if (next.image && later.length) {
+    const also = el('div', 'also');
+    also.append(el('b', null, 'Also coming up: '));
+    also.append(document.createTextNode(later.map((c) =>
+      c._d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      + ' ' + clean(c.speaker || c.title)).join(' · ')));
+    card.append(also);
+  }
   split.append(card);
 
-  if (list.length > 1) {
+  if (next.image) {
+    const media = el('div', 'media');
+    try { media.append(await loadImage(next.image)); } catch (err) { console.warn(err); }
+    split.append(media);
+  } else if (later.length) {
     const rest = el('div', 'card upnext');
     rest.append(el('h3', null, 'Also coming up'));
-    for (const c of list.slice(1, 5)) {
+    for (const c of later) {
       const u = el('div', 'u');
-      const d = c._d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      u.append(el('b', null, d + ' — ' + clean(c.speaker || c.title)));
+      u.append(el('b', null, c._d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        + ' — ' + clean(c.speaker || c.title)));
       u.append(el('span', null, clean(c.title && c.speaker ? c.title : c.affiliation || '')));
       rest.append(u);
     }
@@ -597,9 +615,6 @@ function renderColloquium(slide) {
   return frame(slide, split, slide.credit);
 }
 
-/* Announcements paginate: each showing takes the next pageful, so the list can
-   grow without the slide turning into a wall of small print. An item with a
-   photo is "featured" — it spans the full width and costs two slots. */
 function renderList(slide) {
   const raw = (slide.source === 'announcements' ? state.content?.announcements : slide.items) || [];
   // Blank-but-present entries (a lone space, say) should not render an empty card.
@@ -666,7 +681,7 @@ const RENDERERS = {
   station: (s) => refreshStation(false).catch((e) => console.warn('station', e)).then(() => renderStation(s)),
   iframe: async (s) => renderFrame(s),
   research: renderResearch,
-  colloquium: async (s) => renderColloquium(s),
+  colloquium: renderColloquium,
   list: async (s) => renderList(s),
 };
 
