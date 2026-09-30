@@ -349,6 +349,16 @@
       "tag": "In honor of Prof. Cora Randall",
       "abstract": "Cora Randall’s research on the energetic particle precipitation indirect effect showed how nitrogen oxides made high in the atmosphere descend through the winter polar vortex to alter stratospheric ozone. She led the AIM/CIPS investigation of polar mesospheric clouds and the WAVE DRIVE Science Center. This colloquium celebrates both the science and the person — teacher, mentor, department chair, and extraordinarily generous colleague.",
       "image": "images/randall-colloquium-flyer.jpg"
+    },
+    {
+      "date": "2026-10-02",
+      "time": "11:00 AM",
+      "location": "SEEC S228 · also on Zoom",
+      "speaker": "Dr. Kirsten Mayer",
+      "affiliation": "NSF NCAR",
+      "title": "Investigating Subseasonal Predictability with Earth System Models and Machine Learning",
+      "abstract": "Machine learning for subseasonal forecasting is data-limited: the observational record holds too few examples of the climate states that give rise to predictability to train a model on. This talk looks at how Earth system models can fill that gap, and how explainable AI and emulators can be used to find the sources of subseasonal predictability, including recent progress on NSF NCAR’s emulator work. Conversation from 10:45 AM.",
+      "image": "images/KJMayer_Headshot2026.jpg"
     }
   ],
   "announcements": [
