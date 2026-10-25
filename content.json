@@ -361,9 +361,9 @@
       "image": "images/KJMayer_Headshot2026.jpg"
     },
     {
-      "_readme": "Location was not given in the announcement email — add \"location\" once the room is confirmed and it appears as a third chip.",
       "date": "2026-10-28",
       "time": "11:00 AM",
+      "location": "SEEC S228 (Sievers Room)",
       "speaker": "Dr. Karen McKinnon",
       "affiliation": "UCLA",
       "title": "Heat Extremes in a Changing Climate",
