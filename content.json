@@ -359,6 +359,17 @@
       "title": "Investigating Subseasonal Predictability with Earth System Models and Machine Learning",
       "abstract": "Machine learning for subseasonal forecasting is data-limited: the observational record holds too few examples of the climate states that give rise to predictability to train a model on. This talk looks at how Earth system models can fill that gap, and how explainable AI and emulators can be used to find the sources of subseasonal predictability, including recent progress on NSF NCAR’s emulator work. Conversation from 10:45 AM.",
       "image": "images/KJMayer_Headshot2026.jpg"
+    },
+    {
+      "_readme": "Location was not given in the announcement email — add \"location\" once the room is confirmed and it appears as a third chip.",
+      "date": "2026-10-28",
+      "time": "11:00 AM",
+      "speaker": "Dr. Karen McKinnon",
+      "affiliation": "UCLA",
+      "title": "Heat Extremes in a Changing Climate",
+      "tag": "Special ATOC–CIRES seminar",
+      "abstract": "The June 2021 Pacific Northwest heat wave was so far outside the record that it was initially hard to assign it any probability at all. McKinnon finds that non-normality — several processes converging — is what signals the potential for events this extreme, and that land–atmosphere interactions mattered surprisingly little despite the drought. Historical heat extremes appear to be warming at the same pace as the median, partly through a self-limiting feedback where strongly coupled regions lose less soil moisture on the hottest days.",
+      "image": "images/karen-mckinnon.jpg"
     }
   ],
   "announcements": [
