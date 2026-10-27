@@ -368,8 +368,17 @@
       "affiliation": "UCLA",
       "title": "Heat Extremes in a Changing Climate",
       "tag": "Special ATOC–CIRES seminar",
-      "abstract": "The June 2021 Pacific Northwest heat wave was so far outside the record that it was initially hard to assign it any probability at all. McKinnon finds that non-normality — several processes converging — is what signals the potential for events this extreme, and that land–atmosphere interactions mattered surprisingly little despite the drought. Historical heat extremes appear to be warming at the same pace as the median, partly through a self-limiting feedback where strongly coupled regions lose less soil moisture on the hottest days.",
+      "abstract": "The June 2021 Pacific Northwest heat wave fell so far outside the record that it was initially hard to assign it any probability at all. McKinnon finds that non-normality — several processes converging — is what signals the potential for events this extreme, and that land–atmosphere interactions mattered surprisingly little despite the drought. Historical heat extremes appear to be warming no faster than the median.",
       "image": "images/karen-mckinnon.jpg"
+    },
+    {
+      "date": "2026-10-30",
+      "time": "11:00 AM",
+      "location": "SEEC S228 · also on Zoom",
+      "speaker": "Chaehyeong Lee · Peter Effertz · Leah Bertrand",
+      "title": "Three Talks: Ocean Salinity, Ozone Recovery, and Arctic Radiation",
+      "tag": "Colloquium — three speakers",
+      "abstract": "Chaehyeong Lee (ATOC) assimilates satellite sea surface salinity into NASA's GEOS-S2S-2 and finds the signal reaches well below the surface, sharpening upper-ocean heat content and the 2014–2016 Northeast Pacific marine heatwave. Peter Effertz (CIRES / NOAA Global Monitoring Lab) compares three independent ozone records — Dobson Umkehr retrievals, satellite overpasses and ozonesondes — and finds the clearest recovery, 1–2% per decade, in the southern mid-latitudes and the upper stratosphere. Leah Bertrand (ATOC) uses 23 years of radiation measurements on Alaska's North Slope to show clouds cutting both ways: dimming the surface in the sunlit months and warming it year-round."
     }
   ],
   "announcements": [
