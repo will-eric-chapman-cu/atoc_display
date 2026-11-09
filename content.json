@@ -379,6 +379,16 @@
       "title": "Three Talks: Ocean Salinity, Ozone Recovery, and Arctic Radiation",
       "tag": "Colloquium — three speakers",
       "abstract": "Chaehyeong Lee (ATOC) assimilates satellite sea surface salinity into NASA's GEOS-S2S-2 and finds the signal reaches well below the surface, sharpening upper-ocean heat content and the 2014–2016 Northeast Pacific marine heatwave. Peter Effertz (CIRES / NOAA Global Monitoring Lab) compares three independent ozone records — Dobson Umkehr retrievals, satellite overpasses and ozonesondes — and finds the clearest recovery, 1–2% per decade, in the southern mid-latitudes and the upper stratosphere. Leah Bertrand (ATOC) uses 23 years of radiation measurements on Alaska's North Slope to show clouds cutting both ways: dimming the surface in the sunlit months and warming it year-round."
+    },
+    {
+      "date": "2026-11-13",
+      "time": "11:00 AM",
+      "location": "SEEC S228 · also on Zoom",
+      "speaker": "Dr. Clark Evans",
+      "affiliation": "NOAA Global Systems Laboratory",
+      "title": "MPAS: Building NOAA's Next Operational Forecast Systems",
+      "abstract": "NOAA's Global Systems Laboratory, here in Boulder, builds the models behind the HRRR and the Rapid Refresh. Evans surveys what comes next: two years of rebuilding those systems around MPAS, whose single mesh can stretch from global down to kilometer scale, in service of NOAA's moonshot of skillful kilometer-scale global ensemble forecasts. He covers the physics, the data assimilation, what the testing has shown, and how process-level understanding feeds back into forecast skill.",
+      "image": "images/clark-evans.jpg"
     }
   ],
   "announcements": [
