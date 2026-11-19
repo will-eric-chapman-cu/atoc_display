@@ -18,11 +18,16 @@ const state = {
   index: -1,
   timerId: null,
   paused: false,
+  newsIndex: 0,
+  newsTimerId: null,
+  sidebarDay: '',
+  calendar: null,
+  calendarUnavailable: false,
   cursors: {},          // per-slide rotation cursor (research highlight 1, then 2, ...)
   wx: { obs: null, forecast: null, fetchedAt: 0 },
   station: { rows: null, fetchedAt: 0 },
   startedAt: Date.now(),
-  codeVersion: null,     // fingerprint of the page's own files, for auto-refresh
+  codeVersion: null,     // source of the page's own files, for auto-refresh
   reloadWhenIdle: false,
 };
 
@@ -172,10 +177,12 @@ async function loadContent(isRefresh) {
   if (!res.ok) throw new Error('content.json -> HTTP ' + res.status);
   const raw = await res.text();
   if (isRefresh && raw === state.contentRaw) return false;  // unchanged
+  const content = JSON.parse(raw);
   state.contentRaw = raw;
-  state.content = JSON.parse(raw);
-  state.slides = (state.content.slides || []).filter((s) => s.enabled !== false);
+  state.content = content;
+  state.slides = slidesInRegion('main');
   buildDots();
+  refreshSidebar();
   return true;
 }
 
@@ -598,15 +605,30 @@ async function renderResearch(slide) {
 function parseDay(d) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(clean(d).trim());
   if (!m) return null;
-  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0);
+  const day = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0);
+  return day.getFullYear() === Number(m[1]) && day.getMonth() === Number(m[2]) - 1
+    && day.getDate() === Number(m[3]) ? day : null;
+}
+
+/* Use the display's timezone even when previewing it from another location. */
+function displayToday() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: state.content?.site?.timezone || 'America/Denver',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date());
+  const part = (name) => parts.find((p) => p.type === name).value;
+  return parseDay(`${part('year')}-${part('month')}-${part('day')}`);
+}
+
+function dayKey(day) {
+  return `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
 }
 
 /* Highlights and notices may carry "until": "YYYY-MM-DD". They show through
    the end of that day and then retire themselves, the way past colloquia do.
    A malformed date keeps the item visible: a typo should be seen, not vanish. */
 function current(list) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = displayToday();
   return (list || []).filter((it) => {
     if (!it || !it.until) return true;
     const d = parseDay(it.until);
@@ -615,8 +637,7 @@ function current(list) {
 }
 
 function upcoming(list) {
-  const cutoff = new Date();
-  cutoff.setHours(0, 0, 0, 0);
+  const cutoff = displayToday();
   return (list || [])
     .map((c) => ({ ...c, _d: parseDay(c.date) }))
     .filter((c) => c._d && c._d >= cutoff)
@@ -740,6 +761,177 @@ function renderList(slide) {
   return frame(slide, list, cap);
 }
 
+/* ------------------------------------------------------- persistent sidebar */
+
+function slidesInRegion(region) {
+  return (state.content?.slides || []).filter((s) => s.enabled !== false && (s.region || 'main') === region);
+}
+
+function newsItems() {
+  return slidesInRegion('news').flatMap((slide) => {
+    const items = slide.type === 'research' ? state.content?.research
+      : slide.source === 'announcements' ? state.content?.announcements : slide.items;
+    return current(items).filter((item) => item && clean(item.title).trim())
+      .map((item) => ({ ...item, label: item.tag || (slide.type === 'research' ? 'Research & people' : 'Department notice') }));
+  });
+}
+
+function renderNews() {
+  clearTimeout(state.newsTimerId);
+  const items = newsItems();
+  const target = $('#news-content');
+  const dots = $('#news-dots');
+  target.replaceChildren();
+  dots.replaceChildren();
+  $('#news-count').textContent = items.length ? `${state.newsIndex % items.length + 1} / ${items.length}` : '';
+  if (!items.length) {
+    target.append(el('p', 'sidebar-empty', 'No department news posted right now.'));
+    return;
+  }
+
+  state.newsIndex %= items.length;
+  const item = items[state.newsIndex];
+  const article = el('article', 'news-item');
+  if (item.image) {
+    const media = el('div', 'news-media');
+    const image = new Image();
+    image.alt = ''; // The adjacent title describes this news item.
+    image.onload = () => {
+      const ratio = image.naturalWidth / image.naturalHeight;
+      article.classList.toggle('news-with-portrait', ratio < 1.2);
+    };
+    image.onerror = () => {
+      media.remove();
+      article.classList.remove('news-with-portrait');
+    };
+    media.append(image);
+    article.append(media);
+    image.src = item.image;
+  }
+  const copy = el('div', 'news-copy');
+  copy.append(el('div', 'news-label', clean(item.label)), el('h3', 'news-title', clean(item.title)));
+  if (item.people) copy.append(el('p', 'news-byline', clean(item.people)));
+  if (item.blurb || item.body) copy.append(el('p', 'news-summary', clean(item.blurb || item.body)));
+  article.append(copy);
+  target.append(article);
+
+  items.forEach((_, index) => dots.append(el('span', 'news-dot' + (index === state.newsIndex ? ' on' : ''))));
+  if (items.length > 1 && !state.paused) {
+    const duration = Number(state.content?.site?.newsDuration) || 20;
+    state.newsTimerId = setTimeout(() => { state.newsIndex++; renderNews(); }, Math.max(5, duration) * 1000);
+  }
+}
+
+function calendarEvents() {
+  const colloquia = slidesInRegion('calendar').some((s) => s.type === 'colloquium')
+    ? state.content?.colloquia || [] : [];
+  return [...colloquia, ...(state.content?.calendar || [])]
+    .filter((item) => item && item.enabled !== false)
+    .map((item) => ({ ...item, _d: parseDay(item.date) }))
+    .filter((item) => item._d)
+    .sort((a, b) => a._d - b._d);
+}
+
+function matchesCalendar(snapshot) {
+  return snapshot && snapshot.calendarId === state.content.site?.googleCalendarId?.trim()
+    && snapshot.timeZone === (state.content.site?.timezone || 'America/Denver');
+}
+
+async function refreshCalendar() {
+  if (!state.content.site?.googleCalendarId?.trim()) return;
+  try {
+    const snapshot = await getJSON('calendar.json?v=' + Date.now());
+    if (!matchesCalendar(snapshot) || !Array.isArray(snapshot.events)) {
+      throw new Error('Invalid calendar data');
+    }
+    state.calendar = snapshot;
+    state.calendarUnavailable = false;
+  } catch (error) {
+    state.calendarUnavailable = true;
+    console.warn('calendar refresh', error);
+  }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const target = $('#calendar-content');
+  const status = $('#calendar-status');
+  const previousScroll = target.scrollTop;
+  const today = dayKey(displayToday());
+  const live = matchesCalendar(state.calendar) ? state.calendar : null;
+  const configured = Boolean(state.content.site?.googleCalendarId?.trim());
+  const now = Date.now();
+  const groups = new Map();
+  for (const event of live?.events || calendarEvents()) {
+    if (event.end && Date.parse(event.end) <= now) continue;
+    if (!event.end && event.date < today) continue;
+    const day = event.date < today ? today : event.date;
+    if (!groups.has(day)) groups.set(day, []);
+    groups.get(day).push(event);
+  }
+
+  status.textContent = '';
+  if (live && (state.calendarUnavailable || now - Date.parse(live.updatedAt) > 60 * 60000)) {
+    status.textContent = 'Last synced ' + new Date(live.updatedAt).toLocaleString('en-US', {
+      month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: live.timeZone,
+    });
+  } else if (configured && !live && groups.size) {
+    status.textContent = 'Local schedule';
+  }
+
+  if (!groups.size) {
+    let message = 'No upcoming events.';
+    if (configured && !live) {
+      message = state.calendarUnavailable ? 'Calendar temporarily unavailable.' : 'Loading events…';
+    }
+    target.replaceChildren(el('p', 'sidebar-empty', message));
+    return;
+  }
+
+  const agenda = document.createDocumentFragment();
+  const timeFmt = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric', minute: '2-digit', timeZone: state.content.site?.timezone || 'America/Denver',
+  });
+  for (const [day, events] of groups) {
+    const date = parseDay(day);
+    const group = el('section', 'agenda-day');
+    const heading = el('h3', 'agenda-date' + (day === today ? ' today' : ''));
+    heading.append(el('span', 'agenda-day-number', date.getDate()));
+    heading.append(el('span', 'agenda-day-label', date.toLocaleDateString('en-US', { month: 'short' })
+      + ' · ' + (day === today ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' }))));
+    const list = el('ul', 'agenda-events');
+    for (const event of events) {
+      const row = el('li', 'agenda-event');
+      let time = event.time || 'All day';
+      if (event.start) {
+        const start = new Date(event.start);
+        const end = new Date(event.end);
+        time = end > start ? timeFmt.formatRange(start, end) : timeFmt.format(start);
+        time = time.replace(/:00\b/g, '');
+      }
+      const details = el('div', 'agenda-details');
+      details.append(el('div', 'agenda-title', clean(event.title || event.speaker)));
+      if (event.location) {
+        const location = el('div', 'agenda-location', event.location);
+        location.title = event.location;
+        details.append(location);
+      }
+      row.append(el('span', 'agenda-time', time), details);
+      list.append(row);
+    }
+    group.append(heading, list);
+    agenda.append(group);
+  }
+  target.replaceChildren(agenda);
+  target.scrollTop = previousScroll;
+}
+
+function refreshSidebar() {
+  state.sidebarDay = dayKey(displayToday());
+  renderNews();
+  renderCalendar();
+}
+
 const RENDERERS = {
   image: renderImage,
   weather: (s) => refreshWeather(false).then(() => renderWeather(s)),
@@ -780,7 +972,14 @@ function pauseProgress(on) {
 }
 
 async function show(i) {
-  if (!state.slides.length) return;
+  if (!state.slides.length) {
+    const node = frame({ title: 'Weather & science' }, el('div', 'empty', 'No main slides enabled.'), '');
+    node.classList.add('in');
+    stage.replaceChildren(node);
+    $('#caption').textContent = '';
+    $('#progress-fill').style.width = '0%';
+    return;
+  }
   if (state.reloadWhenIdle) { location.reload(); return; }
   state.index = ((i % state.slides.length) + state.slides.length) % state.slides.length;
   const slide = state.slides[state.index];
@@ -822,6 +1021,7 @@ function advance(delta) {
 
 function togglePause() {
   state.paused = !state.paused;
+  renderNews();
   if (state.paused) {
     clearTimeout(state.timerId);
     pauseProgress(true);
@@ -843,6 +1043,7 @@ function drift() {
 /* ------------------------------------------------------------------- keys */
 
 document.addEventListener('keydown', (e) => {
+  if (e.target === $('#calendar-content') && ['PageUp', 'PageDown', ' '].includes(e.key)) return;
   switch (e.key) {
     case 'ArrowRight': case 'PageDown': case 'n': advance(1); break;
     case 'ArrowLeft': case 'PageUp': case 'p': advance(-1); break;
@@ -855,13 +1056,14 @@ document.addEventListener('keydown', (e) => {
     case 'c': document.body.style.cursor = document.body.style.cursor === 'auto' ? 'none' : 'auto'; break;
   }
 });
-// Click anywhere to jump forward — handy when someone taps the screen.
-document.addEventListener('click', () => advance(1));
+// Tapping the main panel advances its slideshow without changing the sidebar.
+$('#main-panel').addEventListener('click', () => advance(1));
+$('#news-panel').addEventListener('click', () => { state.newsIndex++; renderNews(); });
 
 /* ------------------------------------------------------------- auto refresh */
 
 /* content.json is re-read on its own, but a change to the page's own code only
-   arrives with a reload. Fingerprint those files and reload when they change, so
+   arrives with a reload. Compare those files and reload when they change, so
    a push reaches the kiosk without anyone walking over to it. The reload waits
    for the next slide change rather than cutting one off mid-view. */
 const CODE_FILES = ['', 'assets/app.js', 'assets/style.css'];
@@ -869,8 +1071,9 @@ const CODE_FILES = ['', 'assets/app.js', 'assets/style.css'];
 async function codeVersion() {
   const parts = await Promise.all(CODE_FILES.map(async (f) => {
     try {
-      const res = await fetch(f + '?v=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
-      return res.headers.get('etag') || res.headers.get('last-modified') || '';
+      const res = await fetch(f + '?v=' + Date.now(), { cache: 'no-store' });
+      // A calendar-only deployment can change HTTP headers for the whole site.
+      return res.ok ? await res.text() : null;
     } catch (err) {
       return null;                    // a failed check must never trigger a reload
     }
@@ -897,6 +1100,7 @@ async function boot() {
 
   try {
     await loadContent(false);
+    tickClock();
   } catch (err) {
     console.error(err);
     // A slide is invisible until it is faded in, so this one has to be shown by
@@ -916,6 +1120,11 @@ async function boot() {
   }
 
   refreshAlerts();
+  refreshCalendar();
+  // Retire expired news and advance the calendar at midnight without a reload.
+  setInterval(() => {
+    if (dayKey(displayToday()) !== state.sidebarDay) refreshSidebar();
+  }, 60000);
   refreshWeather(true).catch((e) => console.warn(e));
   refreshStation(true).catch((e) => console.warn('station', e));
   setInterval(() => refreshAlerts(), 5 * 60000);
@@ -925,7 +1134,8 @@ async function boot() {
   // Pick up edits pushed to GitHub without anyone touching the laptop.
   setInterval(() => {
     loadContent(true).then((changed) => { if (changed) console.info('content.json updated'); })
-      .catch((e) => console.warn('content refresh', e));
+      .catch((e) => console.warn('content refresh', e))
+      .finally(refreshCalendar);
   }, 10 * 60000);
 
   // Watch for a newly published version, and reload nightly regardless: that

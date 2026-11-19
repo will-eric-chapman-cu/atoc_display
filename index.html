@@ -15,27 +15,50 @@
 
 <div id="drift">
 
-  <header id="topbar">
-    <div class="brand">
-      <span class="brand-mark">ATOC</span>
-      <span class="brand-name">Atmospheric &amp; Oceanic Sciences<span class="brand-sub">University of Colorado Boulder</span></span>
+  <main id="display-grid">
+    <div id="main-column">
+      <header id="topbar">
+        <div class="brand">
+          <span class="brand-mark">ATOC</span>
+          <span class="brand-name">Atmospheric &amp; Oceanic Sciences<span class="brand-sub">University of Colorado Boulder</span></span>
+        </div>
+        <div class="clock">
+          <div id="clock-time">--:--</div>
+          <div id="clock-date">&nbsp;</div>
+        </div>
+      </header>
+
+      <div id="alertbar" hidden></div>
+
+      <section id="main-panel" aria-label="Weather and science slideshow">
+        <div id="stage" aria-live="polite"></div>
+        <footer id="bottombar">
+          <div id="dots" class="dots" aria-label="Slideshow progress"></div>
+          <div id="caption" class="caption"></div>
+        </footer>
+        <div id="progress"><div id="progress-fill"></div></div>
+      </section>
     </div>
-    <div class="clock">
-      <div id="clock-time">--:--</div>
-      <div id="clock-date">&nbsp;</div>
-    </div>
-  </header>
 
-  <div id="alertbar" hidden></div>
+    <aside id="sidebar" aria-label="Department updates">
+      <section id="news-panel" class="side-panel" aria-labelledby="news-heading">
+        <header class="panel-heading">
+          <h2 id="news-heading">ATOC News</h2>
+          <span id="news-count" class="panel-meta"></span>
+        </header>
+        <div id="news-content" aria-live="polite"></div>
+        <div id="news-dots" class="news-dots" aria-hidden="true"></div>
+      </section>
 
-  <main id="stage" aria-live="polite"></main>
-
-  <footer id="bottombar">
-    <div id="dots" class="dots"></div>
-    <div id="caption" class="caption"></div>
-  </footer>
-
-  <div id="progress"><div id="progress-fill"></div></div>
+      <section id="calendar-panel" class="side-panel" aria-labelledby="calendar-heading">
+        <header class="panel-heading">
+          <h2 id="calendar-heading">ATOC Calendar</h2>
+          <span id="calendar-status" class="panel-meta"></span>
+        </header>
+        <div id="calendar-content" tabindex="0" role="region" aria-label="Upcoming ATOC events"></div>
+      </section>
+    </aside>
+  </main>
 
 </div>
 

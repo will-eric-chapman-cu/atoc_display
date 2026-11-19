@@ -30,8 +30,6 @@ body{
 img{display:block}
 
 /* Slow sub-pixel drift so a static logo never burns into an OLED/LCD panel. */
-/* Flex column rather than fixed grid rows: the alert bar comes and goes, and
-   a display:none row would otherwise hand the stage's 1fr to the wrong child. */
 #drift{
   position:fixed; inset:0;
   display:flex; flex-direction:column;
@@ -40,11 +38,112 @@ img{display:block}
 }
 #topbar, #alertbar, #bottombar{flex:0 0 auto}
 
+/* Three persistent regions: a wide slideshow and two department panels. */
+#display-grid{
+  flex:1 1 auto; min-height:0;
+  display:grid; grid-template-columns:minmax(0,2.5fr) minmax(0,1fr);
+  gap:clamp(12px,1vw,24px); padding:clamp(12px,1vw,24px);
+}
+#main-column{
+  display:flex; flex-direction:column; min-width:0; min-height:0;
+  gap:clamp(12px,1vw,24px);
+}
+#main-panel{
+  position:relative; flex:1 1 auto; min-width:0; min-height:0; overflow:hidden;
+  display:flex; flex-direction:column;
+  border:1px solid var(--line); border-radius:12px; background:#0e1114;
+  container-type:inline-size;
+  --pad:clamp(14px,1.7cqw,30px);
+  --h1:clamp(30px,4.5cqw,68px);
+  --h2:clamp(19px,2.4cqw,38px);
+  --body:clamp(15px,1.7cqw,28px);
+  --small:clamp(12px,1.15cqw,20px);
+}
+#sidebar{
+  display:grid; grid-template-rows:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(12px,1vw,24px); min-width:0; min-height:0;
+  container-type:inline-size;
+  --side-pad:clamp(14px,3.6cqw,26px);
+}
+.side-panel{
+  display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden;
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+}
+.panel-heading{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  flex:0 0 auto; padding:clamp(12px,2.8cqw,20px) var(--side-pad);
+  border-bottom:1px solid var(--line);
+}
+.panel-heading h2{
+  margin:0; font-size:clamp(16px,4.2cqw,26px); font-weight:600; letter-spacing:-.02em;
+  display:flex; align-items:center; gap:.5em;
+}
+.panel-heading h2::before{content:""; width:4px; height:.9em; border-radius:2px; background:var(--gold)}
+.panel-meta{font-size:clamp(11px,2.7cqw,17px); color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+.sidebar-empty{color:var(--muted); font-size:clamp(15px,3.5cqw,22px); line-height:1.5; margin:0}
+
+/* News advances separately, so a slow weather source cannot hold it up. */
+#news-content{flex:1 1 auto; min-height:0; padding:var(--side-pad) var(--side-pad) 0}
+.news-item{display:flex; flex-direction:column; gap:clamp(10px,2.8cqw,18px); height:100%; animation:news-in .45s ease}
+@keyframes news-in{from{opacity:0; transform:translateY(5px)}to{opacity:1; transform:translateY(0)}}
+.news-media{
+  flex:1 1 0; display:grid; place-items:center; min-height:0; min-width:0;
+  grid-template:minmax(0,1fr) / minmax(0,1fr);
+}
+.news-media img{max-width:100%; max-height:100%; object-fit:contain; border-radius:7px}
+.news-copy{flex:0 0 auto; min-width:0; min-height:0; max-height:100%; overflow:hidden; display:flex; flex-direction:column; gap:clamp(7px,1.5cqw,12px)}
+.news-with-portrait{
+  display:grid; grid-template-columns:minmax(0,9fr) minmax(0,11fr); align-items:center;
+}
+.news-with-portrait .news-media{align-self:stretch}
+.news-with-portrait .news-title{-webkit-line-clamp:4}
+.news-with-portrait .news-summary{-webkit-line-clamp:7}
+.news-label{color:var(--gold); font-size:clamp(10px,2.5cqw,16px); font-weight:600; letter-spacing:.1em; text-transform:uppercase}
+.news-title{
+  font-size:clamp(18px,4.9cqw,31px); font-weight:600; line-height:1.2; letter-spacing:-.025em; margin:0;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex-shrink:0;
+}
+.news-byline{font-size:clamp(12px,3cqw,19px); color:var(--gold); line-height:1.35; margin:0;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; flex-shrink:0}
+.news-summary{font-size:clamp(14px,3.5cqw,23px); color:#c8d0da; line-height:1.45; margin:0; flex-shrink:0;
+  display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden}
+.news-dots{display:flex; flex:0 0 auto; align-items:center; gap:6px; padding:clamp(12px,2.8cqw,20px) var(--side-pad); overflow:hidden}
+.news-dot{height:4px; width:16px; max-width:24px; flex:1 1 16px; background:#39414c; border-radius:2px}
+.news-dot.on{background:var(--gold)}
+
+/* Compact agenda with one date label per group. */
+#calendar-content{
+  flex:1 1 auto; min-height:0; overflow:auto; scrollbar-width:thin;
+  scrollbar-color:var(--gold-dim) transparent; overscroll-behavior:contain;
+  padding:0 var(--side-pad);
+}
+#calendar-content:focus-visible{outline:2px solid var(--gold); outline-offset:-2px}
+#calendar-content > .sidebar-empty{margin:var(--side-pad) 0}
+.agenda-day{
+  display:grid; grid-template-columns:clamp(54px,13cqw,89px) minmax(0,1fr);
+  gap:clamp(8px,2cqw,16px); padding:clamp(5px,1.2cqw,10px) 0;
+}
+.agenda-day + .agenda-day{border-top:1px solid var(--line)}
+.agenda-date{display:flex; flex-direction:column; gap:2px; margin:0; padding:4px 0}
+.agenda-day-number{color:var(--gold); font-size:clamp(21px,5.4cqw,35px); font-weight:600; line-height:1}
+.agenda-day-label{color:var(--muted); font-size:clamp(11px,2.5cqw,16px); font-weight:600; line-height:1.2}
+.agenda-date.today .agenda-day-label{color:var(--gold)}
+.agenda-events{list-style:none; padding:0; margin:0}
+.agenda-event{
+  display:grid; grid-template-columns:clamp(84px,25cqw,165px) minmax(0,1fr);
+  gap:clamp(8px,1.8cqw,14px); align-items:baseline;
+  padding:clamp(5px,1cqw,9px) 0;
+}
+.agenda-time{color:var(--muted); font-size:clamp(12px,2.8cqw,18px); line-height:1.25; font-variant-numeric:tabular-nums}
+.agenda-title{font-size:clamp(15px,3.2cqw,22px); line-height:1.25; font-weight:600; overflow-wrap:anywhere}
+.agenda-location{color:var(--muted); font-size:clamp(12px,2.6cqw,17px); line-height:1.25; margin-top:2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
 /* ---------- top bar ---------- */
 #topbar{
   display:flex; align-items:center; justify-content:space-between; gap:var(--pad);
-  padding:calc(var(--pad)*0.38) var(--pad);
-  border-bottom:1px solid var(--line);
+  padding:clamp(12px,1vw,22px) clamp(14px,1.2vw,26px);
+  border:1px solid var(--line); border-radius:12px;
   background:linear-gradient(180deg,#000 0%, #0e1114 100%);
 }
 .brand{display:flex; align-items:center; gap:clamp(10px,1vw,20px); min-width:0}
@@ -77,6 +176,7 @@ img{display:block}
 
 /* ---------- stage / slides ---------- */
 #stage{position:relative; overflow:hidden; flex:1 1 auto; min-height:0}
+#main-panel .wx-temp{font-size:clamp(58px,13cqw,190px)}
 .slide{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
@@ -228,7 +328,7 @@ img{display:block}
 .dot.on{background:var(--gold); transform:scale(1.35)}
 .caption{font-size:var(--small); color:var(--muted); text-align:right; letter-spacing:.03em;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-#progress{position:fixed; left:0; right:0; bottom:0; height:5px; background:#000}
+#progress{position:absolute; left:0; right:0; bottom:0; height:4px; background:#000}
 #progress-fill{height:100%; width:0; background:var(--gold)}
 
 #status{
@@ -241,4 +341,42 @@ img{display:block}
 /* Portrait screens: stack the two-column layouts. */
 @media (max-aspect-ratio: 1/1){
   .wx, .split{grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr)}
+  #display-grid{grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1.5fr) minmax(0,1fr)}
+  #sidebar{grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:minmax(0,1fr); container-type:normal}
+  .side-panel{container-type:inline-size}
+  #sidebar{--side-pad:14px}
+  #main-panel .wx, #main-panel .stn{grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:minmax(0,1fr)}
+}
+
+/* A small browser can still preview every region without squeezing it shut. */
+@media (max-width:700px){
+  body{overflow:auto; cursor:auto}
+  #drift{position:relative; min-height:100dvh; transform:none !important}
+  #display-grid{display:flex; flex-direction:column; flex:1 0 auto}
+  #main-column{flex:none}
+  #main-panel{height:65vh; min-height:350px; flex:none}
+  #sidebar{display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:400px 440px}
+  .brand-name{max-width:210px; font-size:12px}
+  .brand-sub{font-size:9px; margin-top:3px}
+  #topbar{flex-wrap:wrap; gap:12px}
+  .brand{flex:1 0 100%}
+  .clock{display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; text-align:left}
+  #clock-date{line-height:1.4; text-align:right}
+  .wx-grid div{gap:5px; font-size:12px}
+  .dots{gap:5px}
+  .dot{width:5px; height:5px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .news-item{animation:none}
+  .slide, #drift{transition:none}
+}
+
+@media (max-height:850px) and (min-width:701px){
+  .news-summary{-webkit-line-clamp:3}
+  .news-with-portrait .news-summary{-webkit-line-clamp:4}
+}
+
+@container (max-width: 330px){
+  .news-with-portrait{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}
 }

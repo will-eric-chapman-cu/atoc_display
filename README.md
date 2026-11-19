@@ -1,43 +1,51 @@
 # ATOC Lobby Display
 
-A one-page kiosk slideshow for the monitor in the ATOC entrance. It cycles through
-live satellite imagery, Colorado radar, our own campus weather station, current
-conditions, research highlights, the colloquium schedule, and department notices —
-25 seconds each, forever, with no clicking.
+A one-page kiosk dashboard for the monitor in the ATOC entrance, with three areas
+that stay visible together:
 
-It is plain HTML/CSS/JS on GitHub Pages. No build step, no server, no accounts, no
-cost. Once it is running, the only thing anyone ever has to touch is `content.json`.
+- **Left:** live satellite imagery, Colorado radar, the campus weather station, and
+  current conditions rotate every 25 seconds.
+- **Top right — ATOC News:** research highlights and department notices rotate
+  independently every 20 seconds.
+- **Bottom right — ATOC Calendar:** upcoming events from the official Google Calendar.
+
+The agenda groups upcoming events by date and shows their times and locations.
+Add or edit events in Google Calendar. The sync script converts the public
+calendar identified by `site.googleCalendarId` into `calendar.json`, and the
+display checks that file every 10 minutes. The lobby display needs no Google
+login. Without a configured Google calendar, the agenda uses `colloquia` and
+optional entries in the `calendar` array in `content.json`.
 
 ---
 
-## 1. Put it online (about five minutes)
+## 1. Publish with GitHub Pages
 
-1. On github.com, create a new **public** repository. Name it `atoc_display`.
-2. Upload every file in this folder (`index.html`, `content.json`, `README.md`,
-   `.nojekyll`, and the `assets/` folder). Drag-and-drop into the web uploader works.
-3. Go to **Settings → Pages**. Under *Build and deployment*, set **Source** to
-   *Deploy from a branch*, branch `main`, folder `/ (root)`. Save.
-4. Wait a minute, then open:
+1. Push the project to the repository's `main` branch.
+2. Under **Settings → Pages → Build and deployment**, choose **GitHub Actions**
+   as the source.
+3. In **Actions**, enable workflows if your fork has them disabled, then run
+   **Publish ATOC display**. The workflow shows the site's URL after deployment.
 
-   **https://will-eric-chapman-cu.github.io/atoc_display/**
+For an existing site, the repository maintainer only needs to switch the Pages
+source to **GitHub Actions** and run the workflow once. The existing Pages URL
+continues to work. The workflow adds the `calendar.json` file used by the agenda.
 
-That URL is what the lobby laptop points at. Every change you commit is live within
-a minute or two.
-
-> If you would rather have the shorter address `https://will-eric-chapman-cu.github.io/`,
-> name the repository `will-eric-chapman-cu.github.io` instead. Everything else is identical.
+The workflow publishes on pushes to `main` and is scheduled to refresh the
+calendar every 15 minutes. GitHub controls when scheduled runs actually start.
+If a public repository goes 60 days without activity, GitHub disables its
+scheduled workflows. You can re-enable them in **Actions**.
 
 ### Previewing it on your own machine first
 
-Opening `index.html` by double-clicking it will show an empty screen — browsers block
-a `file://` page from reading `content.json`. Serve it instead: in Terminal, `cd` into
-this folder and run
+From this folder, use Python 3.11 or newer to run the preview with live calendar data.
 
 ```bash
-python3 -m http.server 8000
+python3 -m venv .venv
+.venv/bin/python -m pip install -r scripts/calendar-requirements.txt
+.venv/bin/python scripts/calendar_feed.py --serve 8000
 ```
 
-then open <http://localhost:8000>. Press `Ctrl+C` when you are done.
+Open <http://127.0.0.1:8000/>. Press `Ctrl+C` when you are done.
 
 ---
 
@@ -52,8 +60,10 @@ required.
 prompt, plug in power, and connect the monitor. Set the monitor as the primary
 display so the browser opens on it.
 
-**How updates reach the screen.** `content.json` is re-read every ten minutes, so
-edits to highlights, notices and colloquia appear on their own. Changes to the page
+**How updates reach the screen.** After each deployment, the kiosk picks up
+edits to highlights, notices, and slides when it reads `content.json` again
+within ten minutes. The live agenda updates from Google Calendar on its own
+schedule. Changes to the page
 itself — `index.html`, `assets/app.js`, `assets/style.css` — are caught by a version
 check every five minutes, and the screen then reloads at the next slide change rather
 than interrupting one mid-view. `"updateCheckMinutes"` under `site` changes how often
@@ -106,9 +116,21 @@ it looks; a failed check never triggers a reload.
 
 ## 3. Edit what is on the screen
 
-Everything lives in **`content.json`**. Edit it right on github.com — click the file,
-click the pencil, make the change, click *Commit changes*. The display picks it up
-within ten minutes without anyone visiting the laptop.
+Choose where to add an item based on where you want it to appear.
+
+| To add… | Edit… | It appears in… |
+|---|---|---|
+| An award, publication, or research highlight | `research` in `content.json` | ATOC News |
+| A department notice, deadline, or flyer | `announcements` in `content.json` | ATOC News |
+| A weather map, chart, live feed, or other large slide | `slides` in `content.json` | The main panel by default |
+| An event with a date and time | The public ATOC Google Calendar | ATOC Calendar |
+
+News entries rotate automatically from their lists. Add `until` to retire an
+item after a given date. A public event can also have a separate News entry if
+you want to feature its flyer or give it more visibility.
+
+To edit `content.json` on GitHub, open the file, click the pencil, and save
+your changes.
 
 It must stay valid JSON: text in `"double quotes"`, a comma between entries, **no**
 comma after the last one. If the screen goes blank after an edit, that is almost
@@ -116,10 +138,11 @@ always a stray comma — GitHub will usually flag it in the editor.
 
 ### Highlights (awards, publications, people)
 
-The `"research"` list feeds the **ATOC Highlights** slide. It rotates: each time the
-slide comes around it shows the next entry, so a handful will carry the screen
-through the day. Awards, new papers, and student news all belong here — each entry
-gets the whole screen, with its picture beside it.
+The `"research"` list feeds the **ATOC News** panel at the top right. It rotates
+through highlights and department notices independently of the main slideshow.
+Awards, new papers, and student news all belong here. Portrait and square photos
+sit beside the headline. Wide photos use the full width above it. Longer text is
+shortened to fit the panel.
 
 ```json
 {
@@ -146,11 +169,10 @@ own — the same way a colloquium disappears after its date. Use it for sales,
 broadcasts, and application deadlines, so nobody has to remember to take them down.
 A mistyped date keeps the item on screen rather than silently hiding it.
 
-### Colloquium schedule
+### Manual colloquium schedule
 
-Paste in the whole semester at once. Entries whose date has passed disappear on
-their own, so nothing has to be taken down after a talk. The slide shows the next
-talk, and either its flyer or a short "also coming up" list.
+The `colloquia` list supplies the manual agenda and the optional full
+colloquium slide. The manual agenda drops past events automatically.
 
 ```json
 {
@@ -166,32 +188,43 @@ talk, and either its flyer or a short "also coming up" list.
 }
 ```
 
-Dates must be `YYYY-MM-DD`. `tag` overrides the "Next colloquium" label — use it for
-a distinguished lecture or a special seminar. `image` is optional: point it at a
-flyer in `images/` and it appears beside the details. When a talk has a flyer, any
-later talks move to a single line under the abstract instead of their own panel.
+Dates must be `YYYY-MM-DD`. The manual agenda shows upcoming dates, titles,
+times, and locations. `tag`, `abstract`, and `image` are retained for the full
+colloquium slide if you move it back into the main panel with `"region": "main"`.
 
 ### Department notices
 
-The `"announcements"` list is the free-form slide — deadlines, seminars, field
+The `"announcements"` list feeds the news panel — deadlines, seminars, field
 campaign updates, "the espresso machine is fixed". Each entry is a `title` and a
-`body`, and may also carry an `image`.
+`body`, and may also carry an `image`. One item is shown at a time alongside the
+research highlights. An optional `until` date retires a notice automatically.
 
-The slide paginates: it shows a few notices at a time and moves to the next pageful
-each time it comes around, so the list can grow without the text shrinking. An entry
-with a picture spans the full width and counts as two slots. `perPage` on the slide
-(default 4) controls how many fit on a page.
+If you move this list into the main panel with `"region": "main"`, it paginates
+into cards instead. `perPage` on that slide (default 4) controls how many fit.
 
 ---
 
 ## 4. Change the rotation
 
-The `"slides"` array is the running order. Every slide takes:
+The `"slides"` array is the running order. Slides without a `region`, or with
+`"region": "main"`, appear in the main panel. Research and announcement slides use
+`"region": "news"` to feed the top-right panel; the colloquium slide uses
+`"region": "calendar"` to feed the manual calendar view. These sidebar entries do
+not also appear in the main slideshow. `enabled: false` disables an entry in
+either region.
+
+`site.defaultDuration` sets the main slideshow's pace and `site.newsDuration` sets
+the news rotation's pace, in seconds. The sidebar refreshes along with
+`content.json`, and date-based expiry updates at midnight in
+`site.timezone`. On small screens, the three panels stack for previewing.
+
+Every slide takes:
 
 | Field | Meaning |
 |---|---|
 | `id` | Any short name; only used by you |
 | `type` | See the table below |
+| `region` | Omit it or use `"main"` for the main panel. `"news"` routes research and list entries to News. `"calendar"` routes the colloquium list to the manual agenda. |
 | `title` / `subtitle` | Headline and the small caps line under it |
 | `duration` | Seconds on screen. Omit it and the slide uses `defaultDuration` from `site`, which is how the deck ships. |
 | `enabled` | `false` parks a slide without deleting it |
@@ -214,18 +247,15 @@ The `"slides"` array is the running order. Every slide takes:
 The image must be a direct link to a `.jpg`/`.png`/`.gif` that allows hotlinking —
 NOAA, NASA, NCAR and NWS imagery all do.
 
-### What is in the rotation now
+### What rotates in the main panel
 
 | Slide | Source |
 |---|---|
 | Current Conditions — Boulder | api.weather.gov |
 | CU-WRF Forecast — 250-hPa Jet Stream | CU-WRF · McKenzie Larson |
 | Skywatch Weather Station | willychap.github.io/weather |
-| ATOC Highlights | `content.json` |
 | Colorado Visible Satellite — Animated | UW–Madison AOS |
-| ATOC Colloquium | `content.json` |
 | Colorado Reflectivity Composite — Animated | UW–Madison AOS |
-| Department Notices | `content.json` |
 | CU-WRF Forecast — 500-hPa Vorticity | CU-WRF · McKenzie Larson |
 | GOES-19 Full Disk | NOAA/NESDIS STAR |
 | Severe Weather Outlook — Today | NOAA/NWS SPC |
@@ -233,8 +263,8 @@ NOAA, NASA, NCAR and NWS imagery all do.
 | 8–14 Day Temperature Outlook | NOAA CPC |
 | 8–14 Day Precipitation Outlook | NOAA CPC |
 
-14 slides at 25 seconds is a **6-minute cycle**. No slide sets its own
-`duration`, so `defaultDuration` under `site` changes the pace of the whole thing.
+The main panel has 11 slides at 25 seconds, for a cycle of about **4½ minutes**.
+Set `site.defaultDuration` to change the pace of the main panel.
 
 Currently parked (set `"enabled": true` to bring one back):
 
@@ -317,8 +347,7 @@ convert ~/Desktop/your-photo.jpg -resize '1600x1600>' images/your-name-award.jpg
 ```
 
 **4. Edit `content.json`.** For an award, a paper, or student news, add an entry to
-the `"research"` list — that is the **ATOC Highlights** slide, and each entry gets
-the whole screen:
+the `"research"` list — each entry appears in the **ATOC News** panel:
 
 ```json
 {
@@ -339,11 +368,11 @@ Mind the JSON: double quotes, a comma between entries, **no** comma after the la
 
 ```bash
 python3 -m json.tool content.json > /dev/null && echo "JSON is valid"
-python3 -m http.server 8000
+.venv/bin/python scripts/calendar_feed.py --serve 8000
 ```
 
-Open <http://localhost:8000/?seconds=5> and press `→` until you reach your slide.
-`Ctrl+C` stops the server.
+Open <http://127.0.0.1:8000/> and click **ATOC News** until your entry appears.
+To check main slides, use the arrow keys. `Ctrl+C` stops the server.
 
 **6. Commit and push to your fork.**
 
@@ -364,7 +393,7 @@ Or just open the URL that `git push` prints in its output — it links straight 
 
 ### After it is merged
 
-GitHub Pages rebuilds within a minute or two. The lobby laptop re-reads `content.json`
+The **Publish ATOC display** workflow rebuilds GitHub Pages. The lobby laptop re-reads `content.json`
 every ten minutes, and watches its own files for a new version — publish a change to
 the page itself and the screen reloads at the next slide change, usually within about
 five minutes. Nobody has to walk over to the mailbox and touch it. It also reloads
@@ -398,11 +427,12 @@ Handy when someone is standing at the screen with a keyboard.
 | Key | Does |
 |---|---|
 | `→` / `←` | Next / previous slide |
-| `space` | Pause and resume |
+| `space` | Pause and resume the main slideshow and news rotation |
 | `f` | Toggle fullscreen |
 | `r` | Reload |
 | `c` | Show or hide the mouse cursor |
-| click | Jump to the next slide |
+| click main panel | Jump to the next main slide |
+| click news panel | Show the next news item |
 
 Two URL switches help when you are checking something you just edited:
 `?start=3` opens straight to slide 3, and `?seconds=10` runs the whole deck at ten

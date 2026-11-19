@@ -1,9 +1,11 @@
 {
-  "_readme": "Everything on the display is controlled from this file. Edit it on github.com, commit, and the screen picks up the change within 10 minutes. Keep it valid JSON: double quotes, commas between items, no trailing comma.",
+  "_readme": "Add highlights to research and notices to announcements. Both appear in ATOC News. Add main-panel slides to slides with region main or no region. Add dated events in the ATOC Google Calendar. Keep this file valid JSON.",
   "site": {
     "defaultDuration": 25,
+    "newsDuration": 20,
     "timezone": "America/Denver",
-    "_readme": "defaultDuration is how many seconds each slide stays up. No slide sets its own, so this one number controls the whole rotation."
+    "googleCalendarId": "colorado.edu_mvp8111v93bkrk0u2ks3lkh4tg@group.calendar.google.com",
+    "_readme": "defaultDuration sets seconds per main slide; newsDuration sets seconds per news item. News and the calendar stay visible while the main slideshow rotates."
   },
   "weather": {
     "_readme": "Boulder, CO. To move the location: look up your point at https://api.weather.gov/points/LAT,LON and copy gridId/gridX/gridY into 'gridpoint' as 'BOU/54,74'.",
@@ -75,6 +77,7 @@
     },
     {
       "id": "research",
+      "region": "news",
       "type": "research",
       "title": "ATOC Highlights",
       "subtitle": "Awards, publications, and people in the department",
@@ -104,6 +107,7 @@
     },
     {
       "id": "colloquium",
+      "region": "calendar",
       "type": "colloquium",
       "title": "ATOC Colloquium",
       "subtitle": "Talks, seminars, and department events",
@@ -123,6 +127,7 @@
     },
     {
       "id": "announcements",
+      "region": "news",
       "type": "list",
       "source": "announcements",
       "title": "Department Notices",
